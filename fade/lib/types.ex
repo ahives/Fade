@@ -24,7 +24,7 @@ defmodule Fade.Types do
     field(:url, String.t())
     field(:request, String.t())
     field(:response, String.t())
-    field(:errors, list(Error), default: [])
+    field(:error, Error.t(), default: %Error{})
   end
 
   typedstruct module: Result do
