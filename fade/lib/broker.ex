@@ -1,32 +1,30 @@
 defmodule Fade.Broker do
-  alias Fade.ResultHelper
-  alias Fade.Types.{DebugInfo, Error, Result}
+  use TypedStruct
+  alias Fade.{Bindings}
+  alias Fade.Types.{BrokerConfig, FadeConfig}
 
-  @username "guest"
-  @password "guest"
-  @base_url "http://localhost:15672/"
-
-  def get_all_request(url) do
-    headers = get_credentials(@username, @password) |> get_headers()
-    url = @base_url <> url
-
-    case HTTPoison.get(url, headers) do
-      {:ok, response} ->
-        case response.status_code do
-          200 -> ResultHelper.get_successful_response(response.body, url)
-          _ -> ResultHelper.get_faulted_response(response.status_code, url)
-        end
-
-      {:error, reason} ->
-        ResultHelper.get_faulted_response_with_reason(reason, url)
-    end
+  @doc """
+  Performs an HTTP GET operation on the RabbitMQ cluster.
+  """
+  def init(%FadeConfig{} = config \\ %FadeConfig{}) do
+    %BrokerConfig{
+      base_url: config.base_url,
+      headers: get_credentials(config.username, config.password) |> get_headers()
+    }
   end
 
-  def get_headers(credentials) do
+  @doc """
+  Returns all bindings on the current RabbitMQ node.
+  """
+  def get_all_bindings(%BrokerConfig{} = config) do
+    Bindings.get_all(config)
+  end
+
+  defp get_headers(credentials) do
     [Authorization: "Basic #{credentials}", Accept: "application/json"]
   end
 
-  def get_credentials(username, password) do
+  defp get_credentials(username, password) do
     "#{username}:#{password}" |> Base.encode64()
   end
 end
