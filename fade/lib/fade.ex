@@ -1,5 +1,6 @@
 defmodule Fade do
-  alias Fade.Types.{BrokerConfig, FadeConfig}
+  alias FadeConfig
+  alias Fade.Config.Types.{BrokerConfig, FadeConfig}
 
   def setup(%FadeConfig{} = config \\ %FadeConfig{}) do
     %BrokerConfig{

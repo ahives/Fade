@@ -3,12 +3,13 @@ defmodule Fade.Bindings do
 
   alias FadeInternal
   alias Fade.Sanitizer
-  alias Fade.Types.BrokerConfig
+  alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker.Types.BindingCriteria
+  alias Fade.Broker
 
   typedstruct module: BindingDefinition do
-    field :routing_key, String.t()
-    field :arguments, map()
+    field(:routing_key, String.t())
+    field(:arguments, map())
 
     def new(fields) do
       struct!(BindingDefinition, Keyword.merge([]))
@@ -18,10 +19,9 @@ defmodule Fade.Bindings do
   @doc """
   Returns all bindings on the current RabbitMQ node.
   """
-  def get_all(config = %BrokerConfig{}) do
-    url = "api/bindings"
-
-    FadeInternal.get_all_request(config, url)
+  def get_all(config = %BrokerConfig{}) when not is_nil(config) do
+    config
+    |> Broker.get_all_request("api/bindings")
   end
 
   @doc """
@@ -41,9 +41,6 @@ defmodule Fade.Bindings do
       arguments: criteria.arguments
     }
 
-    FadeInternal.post_request(config, url)
-  end
-
-  defp to() do
+    Broker.post_request(config, url)
   end
 end
