@@ -1,6 +1,7 @@
 defmodule Fade.Bindings do
   use TypedStruct
 
+  alias FadeInternal
   alias Fade.Sanitizer
   alias Fade.Types.BrokerConfig
   alias Fade.Broker.Types.BindingCriteria
@@ -20,7 +21,7 @@ defmodule Fade.Bindings do
   def get_all(config = %BrokerConfig{}) do
     url = "api/bindings"
 
-    Fade.get_all_request(config, url)
+    FadeInternal.get_all_request(config, url)
   end
 
   @doc """
@@ -40,7 +41,7 @@ defmodule Fade.Bindings do
       arguments: criteria.arguments
     }
 
-    Fade.post_request(config, url)
+    FadeInternal.post_request(config, url)
   end
 
   defp to() do
