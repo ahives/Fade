@@ -2,8 +2,8 @@ defmodule Fade.Broker do
   @moduledoc """
   Documentation for `Fade`.
   """
-
   use TypedStruct
+
   alias Fade.Types.Result
   alias Fade.Config.Types.BrokerConfig
 

@@ -9,6 +9,10 @@ defmodule Fade.Broker.Queue.Types do
     field(:minimum_heap_size, integer())
     field(:minimum_binary_virtual_heap_size, integer())
     field(:maximum_heap_size, integer())
+
+    def new(fields) do
+      struct!(GarbageCollectionDetails, fields)
+    end
   end
 
   typedstruct module: BackingQueueStatus do
@@ -25,6 +29,10 @@ defmodule Fade.Broker.Queue.Types do
     field(:avg_egress_rate, integer())
     field(:avg_acknowledgement_ingress_rate, integer())
     field(:avg_acknowledgement_egress_rate, integer())
+
+    def new(fields) do
+      struct!(BackingQueueStatus, fields)
+    end
   end
 
   typedstruct module: QueueMessageStats do
@@ -44,6 +52,10 @@ defmodule Fade.Broker.Queue.Types do
     field(:messages_redelivered_details, Rate.t())
     field(:total_messages_acknowledged, integer())
     field(:messages_acknowledged_details, Rate.t())
+
+    def new(fields) do
+      struct!(QueueMessageStats, fields)
+    end
   end
 
   typedstruct module: QueueInfo do
@@ -64,7 +76,7 @@ defmodule Fade.Broker.Queue.Types do
     field(:node, String.t())
     field(:message_bytes_paged_out, integer())
     field(:total_messages_paged_out, integer())
-    field(:backing_queue_status, integer())
+    field(:backing_queue_status, BackingQueueStatus.t())
     field(:head_message_timestamp, DateTime.t())
     field(:message_bytes_persisted, integer())
     field(:total_bytes_of_messages_delivered_but_unacknowledged, integer())
