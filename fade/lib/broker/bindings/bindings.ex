@@ -2,7 +2,6 @@ defmodule Fade.Broker.Bindings do
   use TypedStruct
   require Logger
 
-  alias FadeInternal
   alias Fade.Sanitizer
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker.Bindings.Types.{BindingCriteria, BindingDefinition, BindingInfo}
@@ -47,8 +46,11 @@ defmodule Fade.Broker.Bindings do
         |> map_bindings
         |> Result.get_successful_response(server_response.data, server_response.url)
 
-        {:error, _} ->
-          Result.get_faulted_response_with_reason("Error decoding the returned object.", server_response.url)
+      {:error, _} ->
+        Result.get_faulted_response_with_reason(
+          "Error decoding the returned object.",
+          server_response.url
+        )
     end
   end
 
