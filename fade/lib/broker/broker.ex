@@ -9,7 +9,7 @@ defmodule Fade.Broker do
 
   typedstruct module: ServerResponse do
     field(:url, String.t())
-    field(:body, String.t())
+    field(:data, String.t())
     field(:status_code, integer())
     field(:has_faulted, boolean(), default: false)
     field(:error, atom())
@@ -27,24 +27,24 @@ defmodule Fade.Broker do
           200 ->
             %ServerResponse{
               url: url,
-              body: response.body,
+              data: response.body,
               status_code: response.status_code
             }
 
           _ ->
             %ServerResponse{
               url: url,
-              body: response.body,
+              data: response.body,
               has_faulted: true,
               status_code: response.status_code
             }
         end
 
-      {:error, reason} ->
+      {:error, err} ->
         %ServerResponse{
           url: url,
           has_faulted: true,
-          error: reason.reason
+          error: err.reason
         }
     end
   end
@@ -59,24 +59,24 @@ defmodule Fade.Broker do
           200 ->
             %ServerResponse{
               url: url,
-              body: response.body,
+              data: response.body,
               status_code: response.status_code
             }
 
           _ ->
             %ServerResponse{
               url: url,
-              body: response.body,
+              data: response.body,
               has_faulted: true,
               status_code: response.status_code
             }
         end
 
-      {:error, reason} ->
+      {:error, err} ->
         %ServerResponse{
           url: url,
           has_faulted: true,
-          error: reason.reason
+          error: err.reason
         }
     end
   end

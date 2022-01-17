@@ -1,4 +1,4 @@
-defmodule Fade.Broker.Types do
+defmodule Fade.Broker.Bindings.Types do
   use TypedStruct
   require Protocol
 
@@ -17,6 +17,21 @@ defmodule Fade.Broker.Types do
     field(:routing_key, String.t())
     field(:arguments, map(), default: %{})
     field(:properties_key, String.t())
+
+    def new(fields) do
+      struct!(BindingInfo, fields)
+    end
+
+    # def from_map(map) do
+    #   %BindingInfo{
+    #     source: map.source,
+    #     vhost: map.vhost,
+    #     destination: map.destination,
+    #     destination_type: map.destination_type,
+    #     routing_key: map.routing_key,
+    #     properties_key: map.properties_key
+    #   }
+    # end
   end
 
   typedstruct module: BindingCriteria do
@@ -28,5 +43,14 @@ defmodule Fade.Broker.Types do
     field(:virtual_host, String.t())
   end
 
-  Protocol.derive(Jason.Encoder, Fade.Broker.Types.BindingInfo)
+  typedstruct module: BindingDefinition do
+    field(:routing_key, String.t())
+    field(:arguments, map())
+
+    def new(fields) do
+      struct!(BindingDefinition, Keyword.merge([]))
+    end
+  end
+
+  Protocol.derive(Jason.Encoder, Fade.Broker.Bindings.Types.BindingInfo)
 end

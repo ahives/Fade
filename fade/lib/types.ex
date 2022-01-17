@@ -29,14 +29,14 @@ defmodule Fade.Types do
       struct!(Result, Keyword.merge([timestamp: DateTime.utc_now()], fields))
     end
 
-    def get_successful_response(data, url) do
+    def get_successful_response(data, response_data, url) do
       Result.new(
         data: data,
         has_data: true,
         debug: %DebugInfo{
           url: url,
           response: nil,
-          response: data
+          response: response_data
         }
       )
     end
