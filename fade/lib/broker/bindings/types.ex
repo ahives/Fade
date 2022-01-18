@@ -7,6 +7,10 @@ defmodule Fade.Broker.Bindings.Types do
   typedstruct module: ArgumentValue do
     field(:value, String.t())
     field(:error, %Error{})
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
   end
 
   typedstruct module: BindingInfo do
@@ -19,7 +23,7 @@ defmodule Fade.Broker.Bindings.Types do
     field(:properties_key, String.t())
 
     def new(fields) do
-      struct!(BindingInfo, fields)
+      struct!(__MODULE__, fields)
     end
 
     # def from_map(map) do
@@ -48,7 +52,7 @@ defmodule Fade.Broker.Bindings.Types do
     field(:arguments, map())
 
     def new(fields) do
-      struct!(BindingDefinition, Keyword.merge([]))
+      struct!(__MODULE__, fields)
     end
   end
 

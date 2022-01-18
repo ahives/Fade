@@ -1,5 +1,4 @@
-defmodule Fade.Broker.Core.DataMappings do
-  alias Fade.Broker.Core.Types.Rate
+defmodule Fade.Broker.Core.ResultMapper do
   alias Fade.Broker.ServerResponse
   alias Fade.Types.Result
 
@@ -15,18 +14,6 @@ defmodule Fade.Broker.Core.DataMappings do
           "Error decoding the returned object.",
           server_response.url
         )
-    end
-  end
-
-  def map_rate(data) do
-    Rate.new(value: data["rate"])
-  end
-
-  def to_atom(data) do
-    if is_nil(data) do
-      nil
-    else
-      String.to_atom(data)
     end
   end
 end

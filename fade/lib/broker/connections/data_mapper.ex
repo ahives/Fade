@@ -1,5 +1,5 @@
-defmodule Fade.Broker.Connections.Mapper do
-  alias Fade.Broker.Core.DataMappings
+defmodule Fade.Broker.Connection.DataMapper do
+  alias Fade.Broker.Core.PrimitiveDataMapper
 
   alias Fade.Broker.Connection.Types.{
     ConnectionCapabilities,
@@ -13,16 +13,17 @@ defmodule Fade.Broker.Connections.Mapper do
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn connection ->
       ConnectionInfo.new(
-        reduction_details: DataMappings.map_rate(connection["reduction_details"]),
+        reduction_details: PrimitiveDataMapper.map_rate(connection["reduction_details"]),
         protocol: connection["protocol"],
         total_reductions: connection["total_reductions"],
         packets_received: connection["packets_received"],
         packet_bytes_received: connection["packet_bytes_received"],
         packet_bytes_received_details:
-          DataMappings.map_rate(connection["packet_bytes_received_details"]),
+          PrimitiveDataMapper.map_rate(connection["packet_bytes_received_details"]),
         packets_sent: connection["packets_sent"],
         packet_bytes_sent: connection["packet_bytes_sent"],
-        packet_bytes_sent_details: DataMappings.map_rate(connection["packet_bytes_sent_details"]),
+        packet_bytes_sent_details:
+          PrimitiveDataMapper.map_rate(connection["packet_bytes_sent_details"]),
         connected_at: connection["connected_at"],
         open_channels_limit: connection["open_channels_limit"],
         max_frame_size_in_bytes: connection["max_frame_size_in_bytes"],

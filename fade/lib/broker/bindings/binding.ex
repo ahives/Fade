@@ -1,12 +1,13 @@
-defmodule Fade.Broker.Bindings do
+defmodule Fade.Broker.Binding do
   use TypedStruct
   require Logger
 
   alias Fade.Sanitizer
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
-  alias Fade.Broker.Bindings.Types.{BindingCriteria, BindingDefinition, BindingInfo}
-  alias Fade.Broker.Core.DataMappings
+  alias Fade.Broker.Bindings.Types.{BindingCriteria, BindingDefinition}
+  alias Fade.Broker.Core.ResultMapper
+  alias Fade.Broker.Bindings.DataMapper
 
   @doc """
   Returns all bindings on the current RabbitMQ node.
@@ -14,7 +15,7 @@ defmodule Fade.Broker.Bindings do
   def get_all(config = %BrokerConfig{}) when not is_nil(config) do
     config
     |> Broker.get_all_request("api/bindings")
-    |> DataMappings.map_result(&map_bindings/1)
+    |> ResultMapper.map_result(&DataMapper.map_bindings/1)
   end
 
   @doc """
@@ -36,21 +37,5 @@ defmodule Fade.Broker.Bindings do
 
     config
     |> Broker.post_request(url, definition)
-  end
-
-  defp map_bindings(bindings) do
-    bindings
-    |> Stream.reject(&is_nil/1)
-    |> Enum.map(fn binding ->
-      BindingInfo.new(
-        source: binding["source"],
-        vhost: binding["vhost"],
-        destination: binding["destination"],
-        destination_type: binding["destination_type"],
-        routing_key: binding["routing_key"],
-        arguments: binding["arguments"],
-        properties_key: binding["properties_key"]
-      )
-    end)
   end
 end
