@@ -4,7 +4,7 @@ defmodule Fade.Broker.Queues do
 
   alias Fade.Sanitizer
   alias Fade.Config.Types.BrokerConfig
-  alias Fade.Broker.Queue.Types.{QueueInfo}
+  alias Fade.Broker.Queue.Types.QueueInfo
   alias Fade.Broker
   alias Fade.Broker.ServerResponse
   alias Fade.Types.Result

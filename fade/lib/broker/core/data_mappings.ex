@@ -61,4 +61,12 @@ defmodule Fade.Broker.Core.DataMappings do
       avg_acknowledgement_egress_rate: data["avg_acknowledgement_egress_rate"]
     )
   end
+
+  def to_atom(data) do
+    if is_nil(data) do
+      nil
+    else
+      String.to_atom(data)
+    end
+  end
 end

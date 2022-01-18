@@ -1,7 +1,7 @@
 defmodule Fade.Broker.Queue.Types do
   use TypedStruct
 
-  alias Fade.Broker.Core.Types.{Rate}
+  alias Fade.Broker.Core.Types.Rate
 
   typedstruct module: GarbageCollectionDetails do
     field(:minor_garbage_collection, String.t())
