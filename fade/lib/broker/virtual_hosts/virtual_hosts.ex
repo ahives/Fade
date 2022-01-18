@@ -2,9 +2,7 @@ defmodule Fade.Broker.VirtualHost do
   alias Fade.Broker
   alias Fade.Broker.Core.DataMappings
   alias Fade.Broker.VirtualHost.Types.{MessageStats, VirtualHostInfo}
-  alias Fade.Broker.ServerResponse
   alias Fade.Config.Types.BrokerConfig
-  alias Fade.Types.Result
 
   @doc """
   Returns information about each virtual host on the current RabbitMQ server.
@@ -12,25 +10,10 @@ defmodule Fade.Broker.VirtualHost do
   def get_all(config = %BrokerConfig{}) when not is_nil(config) do
     config
     |> Broker.get_all_request("api/vhosts")
-    |> map_result()
+    |> DataMappings.map_result(&map_virtual_hosts/1)
   end
 
-  defp map_result(server_response = %ServerResponse{}) do
-    case Jason.decode(server_response.data) do
-      {:ok, decoded_object} ->
-        decoded_object
-        |> map_exchanges()
-        |> Result.get_successful_response(server_response.data, server_response.url)
-
-      {:error, _} ->
-        Result.get_faulted_response_with_reason(
-          "Error decoding the returned object.",
-          server_response.url
-        )
-    end
-  end
-
-  defp map_exchanges(virtual_hosts) do
+  defp map_virtual_hosts(virtual_hosts) do
     virtual_hosts
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn virtual_host ->

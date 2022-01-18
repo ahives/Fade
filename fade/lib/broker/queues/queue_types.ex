@@ -11,7 +11,7 @@ defmodule Fade.Broker.Queue.Types do
     field(:maximum_heap_size, integer())
 
     def new(fields) do
-      struct!(GarbageCollectionDetails, fields)
+      struct!(__MODULE__, fields)
     end
   end
 
@@ -31,7 +31,7 @@ defmodule Fade.Broker.Queue.Types do
     field(:avg_acknowledgement_egress_rate, integer())
 
     def new(fields) do
-      struct!(BackingQueueStatus, fields)
+      struct!(__MODULE__, fields)
     end
   end
 
@@ -54,7 +54,7 @@ defmodule Fade.Broker.Queue.Types do
     field(:messages_acknowledged_details, Rate.t())
 
     def new(fields) do
-      struct!(QueueMessageStats, fields)
+      struct!(__MODULE__, fields)
     end
   end
 
@@ -98,7 +98,7 @@ defmodule Fade.Broker.Queue.Types do
     field(:message_stats, QueueMessageStats.t())
 
     def new(fields) do
-      struct!(QueueInfo, fields)
+      struct!(__MODULE__, fields)
     end
   end
 end

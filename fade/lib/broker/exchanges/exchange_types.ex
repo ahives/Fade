@@ -12,7 +12,7 @@ defmodule Fade.Broker.Exchange.Types do
     field(:arguments, map())
 
     def new(fields) do
-      struct!(ExchangeInfo, fields)
+      struct!(__MODULE__, fields)
     end
   end
 end

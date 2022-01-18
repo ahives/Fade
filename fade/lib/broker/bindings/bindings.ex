@@ -4,10 +4,9 @@ defmodule Fade.Broker.Bindings do
 
   alias Fade.Sanitizer
   alias Fade.Config.Types.BrokerConfig
-  alias Fade.Broker.Bindings.Types.{BindingCriteria, BindingDefinition, BindingInfo}
   alias Fade.Broker
-  alias Fade.Broker.ServerResponse
-  alias Fade.Types.Result
+  alias Fade.Broker.Bindings.Types.{BindingCriteria, BindingDefinition, BindingInfo}
+  alias Fade.Broker.Core.DataMappings
 
   @doc """
   Returns all bindings on the current RabbitMQ node.
@@ -15,7 +14,7 @@ defmodule Fade.Broker.Bindings do
   def get_all(config = %BrokerConfig{}) when not is_nil(config) do
     config
     |> Broker.get_all_request("api/bindings")
-    |> map_result()
+    |> DataMappings.map_result(&map_bindings/1)
   end
 
   @doc """
@@ -37,21 +36,6 @@ defmodule Fade.Broker.Bindings do
 
     config
     |> Broker.post_request(url, definition)
-  end
-
-  defp map_result(server_response = %ServerResponse{}) do
-    case Jason.decode(server_response.data) do
-      {:ok, decoded_object} ->
-        decoded_object
-        |> map_bindings
-        |> Result.get_successful_response(server_response.data, server_response.url)
-
-      {:error, _} ->
-        Result.get_faulted_response_with_reason(
-          "Error decoding the returned object.",
-          server_response.url
-        )
-    end
   end
 
   defp map_bindings(bindings) do
