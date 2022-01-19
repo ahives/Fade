@@ -1,5 +1,4 @@
 defmodule Fade.Broker.Binding do
-  use TypedStruct
   require Logger
 
   alias Fade.Sanitizer
