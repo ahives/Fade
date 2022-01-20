@@ -9,6 +9,6 @@ defmodule Fade.Broker.Connection do
   def get_all(config = %BrokerConfig{}) when not is_nil(config) do
     config
     |> Broker.get_all_request("api/connections")
-    |> ResultMapper.map_result(&DataMapper.map_connections/1)
+    |> ResultMapper.map_result(&DataMapper.map_data/1)
   end
 end

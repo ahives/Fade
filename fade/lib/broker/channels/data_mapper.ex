@@ -7,9 +7,13 @@ defmodule Fade.Broker.Channel.DataMapper do
   }
 
   alias Fade.Broker.Core.PrimitiveDataMapper
+  alias Fade.Broker.DataMapper
 
-  def map_channels(channels) do
-    channels
+  @behaviour DataMapper
+
+  @impl DataMapper
+  def map_data(data) do
+    data
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn channel ->
       ChannelInfo.new(

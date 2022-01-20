@@ -1,9 +1,13 @@
 defmodule Fade.Broker.Exchange.DataMapper do
   alias Fade.Broker.Core.PrimitiveDataMapper
+  alias Fade.Broker.DataMapper
   alias Fade.Broker.Exchange.Types.ExchangeInfo
 
-  def map_exchanges(exchanges) do
-    exchanges
+  @behaviour DataMapper
+
+  @impl DataMapper
+  def map_data(data) do
+    data
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn exchange ->
       ExchangeInfo.new(

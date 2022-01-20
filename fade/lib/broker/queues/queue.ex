@@ -12,6 +12,6 @@ defmodule Fade.Broker.Queue do
   def get_all(config = %BrokerConfig{}) when not is_nil(config) do
     config
     |> Broker.get_all_request("api/queues")
-    |> ResultMapper.map_result(&DataMapper.map_queues/1)
+    |> ResultMapper.map_result(&DataMapper.map_data/1)
   end
 end

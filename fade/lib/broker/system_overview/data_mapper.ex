@@ -1,4 +1,7 @@
 defmodule Fade.Broker.SystemOverview.DataMapper do
+  alias Fade.Broker.Core.PrimitiveDataMapper
+  alias Fade.Broker.DataMapper
+
   alias Fade.Broker.SystemOverview.Types.{
     SampleRetentionPolicies,
     ExchangeType,
@@ -12,31 +15,31 @@ defmodule Fade.Broker.SystemOverview.DataMapper do
     SystemOverviewInfo
   }
 
-  alias Fade.Broker.Core.PrimitiveDataMapper
+  @behaviour DataMapper
 
-  def map_system_overview(system_overview) do
+  @impl DataMapper
+  def map_data(data) do
     SystemOverviewInfo.new(
-      management_version: system_overview["management_version"],
-      rates_mode: system_overview["rates_mode"],
-      sample_retention_policies:
-        map_sample_retention_policies(system_overview["sample_retention_policies"]),
-      exchange_types: map_exchange_types(system_overview["exchange_types"]),
-      product_version: system_overview["product_version"],
-      product_name: system_overview["product_name"],
-      rabbitmq_version: system_overview["rabbitmq_version"],
-      cluster_name: system_overview["cluster_name"],
-      erlang_version: system_overview["erlang_version"],
-      erlang_full_version: system_overview["erlang_full_version"],
-      disable_stats: system_overview["disable_stats"],
-      enable_queue_totals: system_overview["enable_queue_totals"],
-      message_stats: map_message_stats(system_overview["message_stats"]),
-      churn_rates: map_churn_rates(system_overview["churn_rates"]),
-      queue_message_stats: map_queue_message_stats(system_overview["queue_totals"]),
-      object_totals: map_cluster_object_totals(system_overview["object_totals"]),
-      stats_database_event_queue: system_overview["statistics_db_event_queue"],
-      node: system_overview["node"],
-      listeners: map_listeners(system_overview["listeners"]),
-      node_contexts: map_node_contexts(system_overview["contexts"])
+      management_version: data["management_version"],
+      rates_mode: data["rates_mode"],
+      sample_retention_policies: map_sample_retention_policies(data["sample_retention_policies"]),
+      exchange_types: map_exchange_types(data["exchange_types"]),
+      product_version: data["product_version"],
+      product_name: data["product_name"],
+      rabbitmq_version: data["rabbitmq_version"],
+      cluster_name: data["cluster_name"],
+      erlang_version: data["erlang_version"],
+      erlang_full_version: data["erlang_full_version"],
+      disable_stats: data["disable_stats"],
+      enable_queue_totals: data["enable_queue_totals"],
+      message_stats: map_message_stats(data["message_stats"]),
+      churn_rates: map_churn_rates(data["churn_rates"]),
+      queue_message_stats: map_queue_message_stats(data["queue_totals"]),
+      object_totals: map_cluster_object_totals(data["object_totals"]),
+      stats_database_event_queue: data["statistics_db_event_queue"],
+      node: data["node"],
+      listeners: map_listeners(data["listeners"]),
+      node_contexts: map_node_contexts(data["contexts"])
     )
   end
 

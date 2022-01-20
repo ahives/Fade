@@ -14,7 +14,7 @@ defmodule Fade.Broker.Binding do
   def get_all(config = %BrokerConfig{}) when not is_nil(config) do
     config
     |> Broker.get_all_request("api/bindings")
-    |> ResultMapper.map_result(&DataMapper.map_bindings/1)
+    |> ResultMapper.map_result(&DataMapper.map_data/1)
   end
 
   @doc """

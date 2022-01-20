@@ -1,6 +1,4 @@
 defmodule Fade.Broker.Connection.DataMapper do
-  alias Fade.Broker.Core.PrimitiveDataMapper
-
   alias Fade.Broker.Connection.Types.{
     ConnectionCapabilities,
     ConnectionClientProperties,
@@ -8,8 +6,14 @@ defmodule Fade.Broker.Connection.DataMapper do
     GarbageCollectionDetails
   }
 
-  def map_connections(connections) do
-    connections
+  alias Fade.Broker.Core.PrimitiveDataMapper
+  alias Fade.Broker.DataMapper
+
+  @behaviour DataMapper
+
+  @impl DataMapper
+  def map_data(data) do
+    data
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn connection ->
       ConnectionInfo.new(

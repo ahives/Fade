@@ -1,5 +1,6 @@
 defmodule Fade.Broker.Queue.DataMapper do
   alias Fade.Broker.Core.PrimitiveDataMapper
+  alias Fade.Broker.DataMapper
 
   alias Fade.Broker.Queue.Types.{
     BackingQueueStatus,
@@ -8,8 +9,11 @@ defmodule Fade.Broker.Queue.DataMapper do
     QueueMessageStats
   }
 
-  def map_queues(queues) do
-    queues
+  @behaviour DataMapper
+
+  @impl DataMapper
+  def map_data(data) do
+    data
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn queue ->
       QueueInfo.new(

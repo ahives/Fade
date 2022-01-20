@@ -1,9 +1,13 @@
 defmodule Fade.Broker.VirtualHost.DataMapper do
   alias Fade.Broker.Core.PrimitiveDataMapper
+  alias Fade.Broker.DataMapper
   alias Fade.Broker.VirtualHost.Types.{MessageStats, VirtualHostInfo}
 
-  def map_virtual_hosts(virtual_hosts) do
-    virtual_hosts
+  @behaviour DataMapper
+
+  @impl DataMapper
+  def map_data(data) do
+    data
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn virtual_host ->
       VirtualHostInfo.new(

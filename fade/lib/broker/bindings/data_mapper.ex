@@ -1,8 +1,12 @@
 defmodule Fade.Broker.Bindings.DataMapper do
   alias Fade.Broker.Bindings.Types.BindingInfo
+  alias Fade.Broker.DataMapper
 
-  def map_bindings(bindings) do
-    bindings
+  @behaviour DataMapper
+
+  @impl DataMapper
+  def map_data(data) do
+    data
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn binding ->
       BindingInfo.new(

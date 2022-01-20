@@ -12,6 +12,6 @@ defmodule Fade.Broker.SystemOverview do
   def get(config = %BrokerConfig{}) when not is_nil(config) do
     config
     |> Broker.get_request("api/overview")
-    |> ResultMapper.map_result(&DataMapper.map_system_overview/1)
+    |> ResultMapper.map_result(&DataMapper.map_data/1)
   end
 end
