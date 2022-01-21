@@ -1,6 +1,16 @@
 defmodule Fade.Snapshot.Types do
   use TypedStruct
 
+  typedstruct module: SnapshotResult do
+    field(:identifier, String.t())
+    field(:data, any())
+    field(:timestamp, DateTime.t())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
   typedstruct module: ChurnMetrics do
     field(:total, integer())
     field(:rate, Rate.t())

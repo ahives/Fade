@@ -7,7 +7,7 @@ defmodule Fade.Types do
     field(:timestamp, DateTime.t())
 
     def new(fields) do
-      struct!(Error, Keyword.merge([timestamp: DateTime.utc_now()], fields))
+      struct!(__MODULE__, Keyword.merge([timestamp: DateTime.utc_now()], fields))
     end
   end
 
@@ -16,6 +16,10 @@ defmodule Fade.Types do
     field(:request, String.t())
     field(:response, String.t())
     field(:error, Error.t(), default: nil)
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
   end
 
   typedstruct module: Result do
@@ -26,7 +30,7 @@ defmodule Fade.Types do
     field(:timestamp, DateTime.t())
 
     def new(fields) do
-      struct!(Result, Keyword.merge([timestamp: DateTime.utc_now()], fields))
+      struct!(__MODULE__, Keyword.merge([timestamp: DateTime.utc_now()], fields))
     end
 
     def get_successful_response(data, response_data, url) do

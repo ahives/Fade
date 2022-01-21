@@ -4,7 +4,6 @@ defmodule Fade.Broker do
   """
   use TypedStruct
 
-  alias Fade.Types.Result
   alias Fade.Config.Types.BrokerConfig
 
   typedstruct module: ServerResponse do

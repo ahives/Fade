@@ -1,7 +1,6 @@
 defmodule Fade.Broker.Channel do
   require Logger
 
-  alias Fade.Sanitizer
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
   alias Fade.Broker.Core.ResultMapper

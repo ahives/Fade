@@ -5,7 +5,7 @@ defmodule Fade.Broker.Core.Types do
     field(:value, integer())
 
     def new(fields) do
-      struct!(Rate, fields)
+      struct!(__MODULE__, fields)
     end
   end
 end

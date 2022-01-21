@@ -47,6 +47,10 @@ defmodule Fade.Snapshot.BrokerConnectivity.DataMapper do
     )
   end
 
+  defp map_channels(nil, _connection_name) do
+    nil
+  end
+
   defp map_channels(channels, connection_name) do
     channels
     |> Stream.reject(&is_nil/1)
@@ -64,6 +68,10 @@ defmodule Fade.Snapshot.BrokerConnectivity.DataMapper do
         queue_operations: map_queue_operations(channel.operation_stats)
       )
     end)
+  end
+
+  defp map_queue_operations(nil) do
+    nil
   end
 
   defp map_queue_operations(operation_stats) do
@@ -120,6 +128,10 @@ defmodule Fade.Snapshot.BrokerConnectivity.DataMapper do
     QueueOperation.new(total: total, rate: rate)
   end
 
+  defp map_network_traffic(nil) do
+    nil
+  end
+
   defp map_network_traffic(connection) do
     NetworkTrafficSnapshot.new(
       max_frame_size: connection.max_frame_size_in_bytes,
@@ -144,6 +156,10 @@ defmodule Fade.Snapshot.BrokerConnectivity.DataMapper do
       bytes: bytes,
       rate: rate
     )
+  end
+
+  defp map_connections(nil, _channels) do
+    nil
   end
 
   defp map_connections(connections, channels) do
