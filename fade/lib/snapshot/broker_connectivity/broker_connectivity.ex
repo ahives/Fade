@@ -5,9 +5,17 @@ defmodule Fade.Snapshot.BrokerConnectivity do
   alias UUID
 
   def take_snapshot(config) do
-    system_overview_result = config |> SystemOverview.get()
-    connection_result = config |> Connection.get_all()
-    channel_result = config |> Channel.get_all()
+    system_overview_result =
+      Task.async(fn -> config |> SystemOverview.get end)
+      |> Task.await()
+
+    connection_result =
+      Task.async(fn -> config |> Connection.get_all end)
+      |> Task.await()
+
+    channel_result =
+      Task.async(fn -> config |> Channel.get_all end)
+      |> Task.await()
 
     identifier = UUID.uuid1()
 
