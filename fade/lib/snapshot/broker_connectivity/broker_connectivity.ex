@@ -6,15 +6,15 @@ defmodule Fade.Snapshot.BrokerConnectivity do
 
   def take_snapshot(config) do
     system_overview_result =
-      Task.async(fn -> config |> SystemOverview.get end)
+      Task.async(fn -> config |> SystemOverview.get() end)
       |> Task.await()
 
     connection_result =
-      Task.async(fn -> config |> Connection.get_all end)
+      Task.async(fn -> config |> Connection.get_all() end)
       |> Task.await()
 
     channel_result =
-      Task.async(fn -> config |> Channel.get_all end)
+      Task.async(fn -> config |> Channel.get_all() end)
       |> Task.await()
 
     identifier = UUID.uuid1()
