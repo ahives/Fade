@@ -9,25 +9,25 @@ defmodule Fade.Broker.VirtualHost.DataMapper do
   def map_data(data) do
     data
     |> Stream.reject(&is_nil/1)
-    |> Enum.map(fn virtual_host ->
+    |> Enum.map(fn vhost ->
       VirtualHostInfo.new(
-        name: virtual_host["name"],
-        tracing: virtual_host["tracing"],
-        cluster_state: virtual_host["cluster_state"],
-        message_stats: map_message_stats(virtual_host["message_stats"]),
-        packet_bytes_received: virtual_host["packet_bytes_received"],
+        name: vhost["name"],
+        tracing: vhost["tracing"],
+        cluster_state: vhost["cluster_state"],
+        message_stats: map_message_stats(vhost["message_stats"]),
+        packet_bytes_received: vhost["packet_bytes_received"],
         packet_bytes_received_details:
-          PrimitiveDataMapper.map_rate(virtual_host["packet_bytes_received_details"]),
-        packet_bytes_sent: virtual_host["packet_bytes_sent"],
+          PrimitiveDataMapper.map_rate(vhost["packet_bytes_received_details"]),
+        packet_bytes_sent: vhost["packet_bytes_sent"],
         packet_bytes_sent_details:
-          PrimitiveDataMapper.map_rate(virtual_host["packet_bytes_sent_details"]),
-        total_messages: virtual_host["total_messages"],
-        message_details: PrimitiveDataMapper.map_rate(virtual_host["message_details"]),
-        unacknowledged_messages: virtual_host["unacknowledged_messages"],
+          PrimitiveDataMapper.map_rate(vhost["packet_bytes_sent_details"]),
+        total_messages: vhost["total_messages"],
+        message_details: PrimitiveDataMapper.map_rate(vhost["message_details"]),
+        unacknowledged_messages: vhost["unacknowledged_messages"],
         unacknowledged_message_details:
-          PrimitiveDataMapper.map_rate(virtual_host["unacknowledged_message_details"]),
-        ready_messages: virtual_host["ready_messages"],
-        ready_message_details: PrimitiveDataMapper.map_rate(virtual_host["ready_message_details"])
+          PrimitiveDataMapper.map_rate(vhost["unacknowledged_message_details"]),
+        ready_messages: vhost["ready_messages"],
+        ready_message_details: PrimitiveDataMapper.map_rate(vhost["ready_message_details"])
       )
     end)
   end
