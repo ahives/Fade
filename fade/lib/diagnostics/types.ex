@@ -183,10 +183,14 @@ defmodule Fade.Diagnostic.Types do
       | :na
     )
 
-    field(:probe_category, :throughput | :connectivity | :memory | :fault_tolerance | :efficiency)
+    field(:category, :throughput | :connectivity | :memory | :fault_tolerance | :efficiency)
 
     def new(fields) do
       struct!(__MODULE__, fields)
     end
+  end
+
+  typedstruct module: DiagnosticScannerMetadata do
+    field(:identifier, String.t())
   end
 end

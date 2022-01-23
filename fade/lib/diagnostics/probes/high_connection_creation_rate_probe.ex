@@ -1,4 +1,4 @@
-defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
+defmodule Fade.Diagnostic.Probes.HighConnectionCreationRateProbe do
   alias Fade.Diagnostic.DiagnosticProbe
 
   alias Fade.Diagnostic.Types.{
@@ -33,18 +33,18 @@ defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
 
     probe_data = [
       ProbeData.new(
-        property_name: "connections_closed.rate",
-        property_value: data.connections_closed.rate
+        property_name: "channels_created.rate",
+        property_value: data.channels_created.rate
       ),
       ProbeData.new(
-        property_name: "high_connection_closure_rate_threshold",
-        property_value: config.probes.high_connection_closure_rate_threshold
+        property_name: "high_connection_creation_rate_threshold",
+        property_value: config.probes.high_connection_creation_rate_threshold
       )
     ]
 
     case compare_probe_readout(
-           data.connections_closed.rate,
-           config.probes.high_connection_closure_rate_threshold
+           data.channels_created.rate,
+           config.probes.high_connection_creation_rate_threshold
          ) do
       true ->
         ProbeResult.warning(nil, nil, metadata.id, metadata.name, component_type, probe_data, nil)
@@ -57,12 +57,12 @@ defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.HighConnectionClosureRateProbe"
+      "Fade.Diagnostic.Probes.HighConnectionCreationRateProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "High Connection Closure Rate Probe",
+      name: "High Connection Creation Rate Probe",
       description: ""
     )
   end
