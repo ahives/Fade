@@ -2,12 +2,14 @@ defmodule Fade.Diagnostic.Probes.HighConnectionCreationRateProbe do
   alias Fade.Diagnostic.DiagnosticProbe
 
   alias Fade.Diagnostic.Types.{
+    DiagnosticsConfig,
     DiagnosticProbeMetadata,
     ProbeData,
     ProbeResult
   }
 
   alias Fade.Diagnostic.IdentifierGeneration
+  alias Fade.Snapshot.Types.BrokerConnectivitySnapshot
 
   @behaviour DiagnosticProbe
 
@@ -26,15 +28,16 @@ defmodule Fade.Diagnostic.Probes.HighConnectionCreationRateProbe do
   end
 
   @impl DiagnosticProbe
+  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: BrokerConnectivitySnapshot.t()) ::
+          ProbeResult.t()
   def execute(config, snapshot) do
-    data = snapshot.data
     metadata = get_metadata()
     component_type = get_component_type()
 
     probe_data = [
       ProbeData.new(
         property_name: "channels_created.rate",
-        property_value: data.channels_created.rate
+        property_value: snapshot.channels_created.rate
       ),
       ProbeData.new(
         property_name: "high_connection_creation_rate_threshold",
@@ -43,7 +46,7 @@ defmodule Fade.Diagnostic.Probes.HighConnectionCreationRateProbe do
     ]
 
     case compare_probe_readout(
-           data.channels_created.rate,
+           snapshot.channels_created.rate,
            config.probes.high_connection_creation_rate_threshold
          ) do
       true ->
@@ -68,16 +71,10 @@ defmodule Fade.Diagnostic.Probes.HighConnectionCreationRateProbe do
   end
 
   @impl DiagnosticProbe
-  def get_component_type do
-    :connection
-  end
+  def get_component_type, do: :connection
 
   @impl DiagnosticProbe
-  def get_category do
-    :connectivity
-  end
+  def get_category, do: :connectivity
 
-  defp compare_probe_readout(snapshot_value, config_value) do
-    snapshot_value >= config_value
-  end
+  defp compare_probe_readout(snapshot_value, config_value), do: snapshot_value >= config_value
 end

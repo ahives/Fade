@@ -1,9 +1,28 @@
 defmodule Fade.Diagnostic.Types do
   use TypedStruct
 
+  typedstruct module: DiagnosticScannerProfile do
+    field(:probes, list(DiagnosticProbe))
+    field(:scanners, list(DiagnosticScanner))
+    # field(:, )
+    # field(:, )
+    # field(:, )
+  end
+
+  typedstruct module: ScannerResult do
+    field(:id, String.t())
+    field(:scanner_id, String.t())
+    field(:probe_results, list(ProbeResult))
+    field(:timestamp, DateTime.t())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
   typedstruct module: ProbeData do
     field(:property_name, String.t())
-    field(:property_value, String.t())
+    field(:property_value, any())
 
     def new(fields) do
       struct!(__MODULE__, fields)
@@ -108,6 +127,27 @@ defmodule Fade.Diagnostic.Types do
         component_type,
         probe_data,
         :healthy,
+        kb_article
+      )
+    end
+
+    def unhealthy(
+          parent_component_id,
+          component_id,
+          probe_id,
+          name,
+          component_type,
+          probe_data,
+          kb_article
+        ) do
+      probe_status(
+        parent_component_id,
+        component_id,
+        probe_id,
+        name,
+        component_type,
+        probe_data,
+        :unhealthy,
         kb_article
       )
     end

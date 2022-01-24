@@ -1,4 +1,4 @@
-defmodule Fade.Diagnostic.Probes.ProbeScanner do
+defmodule Fade.Diagnostic.ProbeLocator do
   alias Fade.Diagnostic.DiagnosticProbe
 
   def find_probes do

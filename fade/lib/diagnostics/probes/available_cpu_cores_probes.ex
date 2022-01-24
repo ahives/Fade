@@ -1,4 +1,4 @@
-defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
+defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
   alias Fade.Diagnostic.DiagnosticProbe
 
   alias Fade.Diagnostic.Types.{
@@ -9,7 +9,7 @@ defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
   }
 
   alias Fade.Diagnostic.IdentifierGeneration
-  alias Fade.Snapshot.Types.BrokerConnectivitySnapshot
+  alias Fade.Diagnostic.Types.ProbeResult
 
   @behaviour DiagnosticProbe
 
@@ -28,44 +28,51 @@ defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
   end
 
   @impl DiagnosticProbe
-  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: BrokerConnectivitySnapshot.t()) ::
-          ProbeResult.t()
-  def execute(config, snapshot) do
+  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: NodeSnapshot.t()) :: ProbeResult.t()
+  def execute(_config, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
 
     probe_data = [
       ProbeData.new(
-        property_name: "connections_closed.rate",
-        property_value: snapshot.connections_closed.rate
-      ),
-      ProbeData.new(
-        property_name: "high_connection_closure_rate_threshold",
-        property_value: config.probes.high_connection_closure_rate_threshold
+        property_name: "available_cores_detected",
+        property_value: snapshot.available_cores_detected
       )
     ]
 
-    case compare_probe_readout(
-           snapshot.connections_closed.rate,
-           config.probes.high_connection_closure_rate_threshold
-         ) do
+    case snapshot.available_cores_detected <= 0 do
       true ->
-        ProbeResult.warning(nil, nil, metadata.id, metadata.name, component_type, probe_data, nil)
+        ProbeResult.unhealthy(
+          snapshot.cluster_identifier,
+          snapshot.identifier,
+          metadata.id,
+          metadata.name,
+          component_type,
+          nil
+        )
 
       false ->
-        ProbeResult.healthy(nil, nil, metadata.id, metadata.name, component_type, probe_data, nil)
+        ProbeResult.healthy(
+          snapshot.cluster_identifier,
+          snapshot.identifier,
+          metadata.id,
+          metadata.name,
+          component_type,
+          probe_data,
+          nil
+        )
     end
   end
 
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.HighConnectionClosureRateProbe"
+      "Fade.Diagnostic.Probes.AvailableCpuCoresProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "High Connection Closure Rate Probe",
+      name: "Available CPU Cores Probe",
       description: ""
     )
   end
@@ -75,6 +82,4 @@ defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
 
   @impl DiagnosticProbe
   def get_category, do: :connectivity
-
-  defp compare_probe_readout(snapshot_value, config_value), do: snapshot_value >= config_value
 end
