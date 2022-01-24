@@ -1,4 +1,4 @@
-defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
+defmodule Fade.Diagnostic.Probes.ChannelLimitReachedProbe do
   alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
   alias Fade.Diagnostic.DiagnosticProbe
 
@@ -9,7 +9,7 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
   }
 
   alias Fade.Diagnostic.IdentifierGeneration
-  alias Fade.Snapshot.Types.NodeSnapshot
+  alias Fade.Snapshot.Types.ConnectionSnapshot
 
   @behaviour DiagnosticProbe
 
@@ -28,22 +28,29 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
   end
 
   @impl DiagnosticProbe
-  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: NodeSnapshot.t()) :: ProbeResult.t()
+  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: ConnectionSnapshot.t()) ::
+          ProbeResult.t()
   def execute(_config, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
 
+    channel_count = Enum.count(snapshot.channels)
+
     probe_data = [
       ProbeData.new(
-        property_name: "available_cores_detected",
-        property_value: snapshot.available_cores_detected
+        property_name: "channels.count",
+        property_value: channel_count
+      ),
+      ProbeData.new(
+        property_name: "open_channels_limit",
+        property_value: snapshot.open_channels_limit
       )
     ]
 
-    case snapshot.available_cores_detected <= 0 do
+    case compare_probe_readout(channel_count, snapshot.open_channels_limit) do
       true ->
         ProbeResult.unhealthy(
-          snapshot.cluster_identifier,
+          snapshot.node_identifier,
           snapshot.identifier,
           metadata.id,
           metadata.name,
@@ -54,7 +61,7 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
 
       false ->
         ProbeResult.healthy(
-          snapshot.cluster_identifier,
+          snapshot.node_identifier,
           snapshot.identifier,
           metadata.id,
           metadata.name,
@@ -68,19 +75,22 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.AvailableCpuCoresProbe"
+      "Fade.Diagnostic.Probes.ChannelLimitReachedProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "Available CPU Cores Probe",
-      description: ""
+      name: "Channel Limit Reached Probe",
+      description: "Measures actual number of channels to the defined limit on connection."
     )
   end
 
   @impl DiagnosticProbe
-  def get_component_type, do: :node
+  def get_component_type, do: :connection
 
   @impl DiagnosticProbe
   def get_category, do: :throughput
+
+  defp compare_probe_readout(lefthand_value, righthand_value),
+    do: lefthand_value >= righthand_value
 end

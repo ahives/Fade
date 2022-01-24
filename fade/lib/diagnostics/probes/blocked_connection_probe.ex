@@ -1,4 +1,4 @@
-defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
+defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
   alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
   alias Fade.Diagnostic.DiagnosticProbe
 
@@ -9,7 +9,7 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
   }
 
   alias Fade.Diagnostic.IdentifierGeneration
-  alias Fade.Snapshot.Types.NodeSnapshot
+  alias Fade.Snapshot.Types.ConnectionSnapshot
 
   @behaviour DiagnosticProbe
 
@@ -28,22 +28,23 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
   end
 
   @impl DiagnosticProbe
-  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: NodeSnapshot.t()) :: ProbeResult.t()
-  def execute(_config, snapshot) do
+  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: ConnectionSnapshot.t()) ::
+          ProbeResult.t()
+  def execute(config, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
 
     probe_data = [
       ProbeData.new(
-        property_name: "available_cores_detected",
-        property_value: snapshot.available_cores_detected
+        property_name: "state",
+        property_value: snapshot.state
       )
     ]
 
-    case snapshot.available_cores_detected <= 0 do
-      true ->
+    case state do
+      :blocked ->
         ProbeResult.unhealthy(
-          snapshot.cluster_identifier,
+          snapshot.node_identifier,
           snapshot.identifier,
           metadata.id,
           metadata.name,
@@ -52,9 +53,9 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
           nil
         )
 
-      false ->
+      _ ->
         ProbeResult.healthy(
-          snapshot.cluster_identifier,
+          snapshot.node_identifier,
           snapshot.identifier,
           metadata.id,
           metadata.name,
@@ -68,18 +69,18 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.AvailableCpuCoresProbe"
+      "Fade.Diagnostic.Probes.BlockedConnectionProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "Available CPU Cores Probe",
+      name: "Blocked Connection Probe",
       description: ""
     )
   end
 
   @impl DiagnosticProbe
-  def get_component_type, do: :node
+  def get_component_type, do: :connection
 
   @impl DiagnosticProbe
   def get_category, do: :throughput
