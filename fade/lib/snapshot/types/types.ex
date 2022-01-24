@@ -1,6 +1,50 @@
 defmodule Fade.Snapshot.Types do
   use TypedStruct
 
+  typedstruct module: ChurnMetrics do
+    field(:total, integer())
+    field(:rate, Rate.t())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
+  typedstruct module: Packets do
+    field(:total, integer())
+    field(:bytes, integer())
+    field(:rate, integer())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
+  typedstruct module: QueueOperation do
+    field(:total, integer())
+    field(:rate, integer())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
+  typedstruct module: QueueOperationMetrics do
+    field(:incoming, QueueOperation.t())
+    field(:gets, QueueOperation.t())
+    field(:gets_without_ack, QueueOperation.t())
+    field(:delivered, QueueOperation.t())
+    field(:delivered_without_ack, QueueOperation.t())
+    field(:delivered_gets, QueueOperation.t())
+    field(:redelivered, QueueOperation.t())
+    field(:acknowledged, QueueOperation.t())
+    field(:not_routed, QueueOperation.t())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
   typedstruct module: FileDescriptorChurnMetrics do
     field(:available, integer())
     field(:used, integer())
@@ -15,13 +59,6 @@ defmodule Fade.Snapshot.Types do
     field(:available, integer())
     field(:used, integer())
     field(:usage_rate, integer())
-  end
-
-  typedstruct module: OperatingSystemSnapshot do
-    field(:node_identifier, String.t())
-    field(:process_id, String.t())
-    field(:file_descriptors, FileDescriptorChurnMetrics.t())
-    field(:socket_descriptors, SocketDescriptorChurnMetrics.t())
   end
 
   typedstruct module: Bytes do
@@ -82,14 +119,6 @@ defmodule Fade.Snapshot.Types do
     field(:Rate, integer())
   end
 
-  typedstruct module: MemorySnapshot do
-    field(:NodeIdentifier, String.t())
-    field(:Used, integer())
-    field(:UsageRate, integer())
-    field(:Limit, integer())
-    field(:AlarmInEffect, integer())
-  end
-
   typedstruct module: CollectedGarbage do
     field(:Total, integer())
     field(:Rate, integer())
@@ -113,15 +142,6 @@ defmodule Fade.Snapshot.Types do
     field(:Storage, StorageDetails.t())
   end
 
-  typedstruct module: BrokerRuntimeSnapshot do
-    field(:Identifier, String.t())
-    field(:ClusterIdentifier, String.t())
-    field(:Version, String.t())
-    field(:Processes, RuntimeProcessChurnMetrics.t())
-    field(:Database, RuntimeDatabase.t())
-    field(:gc, GarbageCollection.t())
-  end
-
   typedstruct module: IO do
     field(:Reads, DiskUsageDetails.t())
     field(:Writes, DiskUsageDetails.t())
@@ -140,22 +160,5 @@ defmodule Fade.Snapshot.Types do
   typedstruct module: ContextSwitchingDetails do
     field(:Total, integer())
     field(:Rate, integer())
-  end
-
-  typedstruct module: NodeSnapshot do
-    field(:operating_system, OperatingSystemSnapshot.t())
-    field(:rates_mode, String.t())
-    field(:uptime, integer())
-    field(:inter_node_heartbeat, integer())
-    field(:identifier, String.t())
-    field(:cluster_identifier, String.t())
-    field(:type, String.t())
-    field(:is_running, boolean())
-    field(:available_cores_detected, integer())
-    field(:network_partitions, list(String))
-    field(:disk, DiskSnapshot.t())
-    field(:runtime, BrokerRuntimeSnapshot.t())
-    field(:memory, MemorySnapshot.t())
-    field(:context_switching, ContextSwitchingDetails.t())
   end
 end

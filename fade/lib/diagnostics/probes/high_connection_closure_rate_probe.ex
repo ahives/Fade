@@ -1,9 +1,9 @@
 defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
+  alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
   alias Fade.Diagnostic.DiagnosticProbe
 
   alias Fade.Diagnostic.Types.{
     DiagnosticProbeMetadata,
-    DiagnosticsConfig,
     ProbeData,
     ProbeResult
   }

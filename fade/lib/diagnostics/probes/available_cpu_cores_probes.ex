@@ -1,15 +1,14 @@
 defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
+  alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
   alias Fade.Diagnostic.DiagnosticProbe
 
   alias Fade.Diagnostic.Types.{
     DiagnosticProbeMetadata,
-    DiagnosticsConfig,
     ProbeData,
     ProbeResult
   }
 
   alias Fade.Diagnostic.IdentifierGeneration
-  alias Fade.Diagnostic.Types.ProbeResult
 
   @behaviour DiagnosticProbe
 
