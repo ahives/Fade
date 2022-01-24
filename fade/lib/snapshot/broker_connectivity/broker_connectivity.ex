@@ -1,7 +1,7 @@
 defmodule Fade.Snapshot.BrokerConnectivity do
   alias Fade.Broker.{Channel, Connection, SystemOverview}
   alias Fade.Snapshot.BrokerConnectivity.DataMapper
-  alias Fade.Snapshot.ResultMapper
+  alias Fade.Snapshot.SnapshotResult
   alias UUID
 
   def take_snapshot(config) do
@@ -20,6 +20,6 @@ defmodule Fade.Snapshot.BrokerConnectivity do
     identifier = UUID.uuid1()
 
     DataMapper.map_data(system_overview_result.data, connection_result.data, channel_result.data)
-    |> ResultMapper.map_result(identifier)
+    |> SnapshotResult.map_result(identifier)
   end
 end

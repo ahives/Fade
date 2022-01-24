@@ -9,5 +9,13 @@ defmodule Fade.Snapshot.SnapshotResult do
     def new(fields) do
       struct!(__MODULE__, fields)
     end
+
+    def map_result(data, identifier) do
+      new(
+        identifier: identifier,
+        data: data,
+        timestamp: DateTime.utc_now()
+      )
+    end
   end
 end

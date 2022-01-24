@@ -1,13 +1,13 @@
 defmodule Fade.Snapshot.BrokerConnectivity.DataMapper do
   alias Fade.Snapshot.Types.{
-    ChurnMetrics,
-    Packets,
-    NetworkTrafficSnapshot,
-    QueueOperation,
-    QueueOperationMetrics,
+    BrokerConnectivitySnapshot,
     ChannelSnapshot,
+    ChurnMetrics,
     ConnectionSnapshot,
-    BrokerConnectivitySnapshot
+    NetworkTrafficSnapshot,
+    Packets,
+    QueueOperation,
+    QueueOperationMetrics
   }
 
   alias Fade.Broker.SystemOverview.Types.SystemOverviewInfo

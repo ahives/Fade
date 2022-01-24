@@ -37,11 +37,12 @@ defmodule Fade.Types do
       Result.new(
         data: data,
         has_data: true,
-        debug: %DebugInfo{
-          url: url,
-          response: nil,
-          response: response_data
-        }
+        debug:
+          DebugInfo.new(
+            url: url,
+            response: nil,
+            response: response_data
+          )
       )
     end
 
@@ -49,11 +50,12 @@ defmodule Fade.Types do
       Result.new(
         data: nil,
         has_faulted: true,
-        debug: %DebugInfo{
-          url: url,
-          response: nil,
-          error: get_error(status_code)
-        }
+        debug:
+          DebugInfo.new(
+            url: url,
+            response: nil,
+            error: get_error(status_code)
+          )
       )
     end
 
@@ -61,11 +63,12 @@ defmodule Fade.Types do
       Result.new(
         data: nil,
         has_faulted: true,
-        debug: %DebugInfo{
-          url: url,
-          response: nil,
-          error: Error.new(reason: reason)
-        }
+        debug:
+          DebugInfo.new(
+            url: url,
+            response: nil,
+            error: Error.new(reason: reason)
+          )
       )
     end
 

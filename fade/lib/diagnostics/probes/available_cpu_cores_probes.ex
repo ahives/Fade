@@ -47,6 +47,7 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
           metadata.id,
           metadata.name,
           component_type,
+          probe_data,
           nil
         )
 
@@ -77,8 +78,8 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
   end
 
   @impl DiagnosticProbe
-  def get_component_type, do: :connection
+  def get_component_type, do: :node
 
   @impl DiagnosticProbe
-  def get_category, do: :connectivity
+  def get_category, do: :throughput
 end
