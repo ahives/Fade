@@ -1,4 +1,4 @@
-defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
+defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
   alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
   alias Fade.Diagnostic.DiagnosticProbe
 
@@ -9,15 +9,22 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
   }
 
   alias Fade.Diagnostic.IdentifierGeneration
-  alias Fade.Snapshot.Types.ConnectionSnapshot
+  alias Fade.Snapshot.Types.ChannelSnapshot
 
   @behaviour DiagnosticProbe
 
-  def execute(nil, _snapshot) do
+  def execute(nil, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    ProbeResult.not_applicable(nil, nil, metadata.id, metadata.name, component_type, nil)
+    ProbeResult.not_applicable(
+      snapshot.connection_identifier,
+      snapshot.identifier,
+      metadata.id,
+      metadata.name,
+      component_type,
+      nil
+    )
   end
 
   def execute(_config, nil) do
@@ -28,23 +35,29 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
   end
 
   @impl DiagnosticProbe
-  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: ConnectionSnapshot.t()) ::
+  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: ChannelSnapshot.t()) ::
           ProbeResult.t()
-  def execute(config, snapshot) do
+  def execute(_config, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
 
+    channel_count = Enum.count(snapshot.channels)
+
     probe_data = [
       ProbeData.new(
-        property_name: "state",
-        property_value: snapshot.state
+        property_name: "unacknowledged_messages",
+        property_value: snapshot.unacknowledged_messages
+      ),
+      ProbeData.new(
+        property_name: "prefetch_count",
+        property_value: snapshot.prefetch_count
       )
     ]
 
-    case snapshot.state do
-      :blocked ->
+    case compare_probe_readout(snapshot.unacknowledged_messages, snapshot.prefetch_count) do
+      true ->
         ProbeResult.unhealthy(
-          snapshot.node_identifier,
+          snapshot.connection_identifier,
           snapshot.identifier,
           metadata.id,
           metadata.name,
@@ -53,9 +66,9 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
           nil
         )
 
-      _ ->
+      false ->
         ProbeResult.healthy(
-          snapshot.node_identifier,
+          snapshot.connection_identifier,
           snapshot.identifier,
           metadata.id,
           metadata.name,
@@ -69,13 +82,14 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.BlockedConnectionProbe"
+      "Fade.Diagnostic.Probes.ChannelThrottlingProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "Blocked Connection Probe",
-      description: ""
+      name: "Channel Throttling Probe",
+      description:
+        "Monitors connections to the RabbitMQ broker to determine whether channels are being throttled."
     )
   end
 
@@ -84,4 +98,7 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
 
   @impl DiagnosticProbe
   def get_category, do: :throughput
+
+  defp compare_probe_readout(lefthand_value, righthand_value),
+    do: lefthand_value > righthand_value
 end

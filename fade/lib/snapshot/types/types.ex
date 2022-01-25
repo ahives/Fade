@@ -1,6 +1,91 @@
 defmodule Fade.Snapshot.Types do
   use TypedStruct
 
+  typedstruct module: QueueChurnMetrics do
+    field(:incoming, QueueDepth.t())
+    field(:unacknowledged, QueueDepth.t())
+    field(:ready, QueueDepth.t())
+    field(:gets, QueueDepth.t())
+    field(:gets_without_ack, QueueDepth.t())
+    field(:delivered, QueueDepth.t())
+    field(:delivered_without_ack, QueueDepth.t())
+    field(:delivered_gets, QueueDepth.t())
+    field(:redelivered, QueueDepth.t())
+    field(:acknowledged, QueueDepth.t())
+    field(:aggregate, QueueDepth.t())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
+  typedstruct module: QueueMemoryDetails do
+    field(:total, integer())
+    field(:paged_out, PagedOut.t())
+    field(:ram, RAM.t())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
+  typedstruct module: QueueInternals do
+    field(:reductions, Reductions.t())
+    field(:target_count_of_messages_allowed_in_ram, integer())
+    field(:consumer_utilization, integer())
+    field(:q1, integer())
+    field(:q2, integer())
+    field(:q3, integer())
+    field(:q4, integer())
+    field(:avg_ingress_rate, integer())
+    field(:avg_egress_rate, integer())
+    field(:avg_acknowledgement_ingress_rate, integer())
+    field(:avg_acknowledgement_egress_rate, integer())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
+  typedstruct module: RAM do
+    field(:total, integer())
+    field(:bytes, integer())
+    field(:target, integer())
+    field(:unacknowledged, integer())
+    field(:ready, integer())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
+  typedstruct module: PagedOut do
+    field(:total, integer())
+    field(:bytes, integer())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
+  typedstruct module: Reductions do
+    field(:total, integer())
+    field(:rate, integer())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
+  typedstruct module: QueueDepth do
+    field(:total, integer())
+    field(:rate, Rate.t())
+
+    def new(fields) do
+      struct!(__MODULE__, fields)
+    end
+  end
+
   typedstruct module: ChurnMetrics do
     field(:total, integer())
     field(:rate, Rate.t())
