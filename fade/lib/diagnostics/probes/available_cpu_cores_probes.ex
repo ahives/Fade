@@ -13,11 +13,18 @@ defmodule Fade.Diagnostic.Probes.AvailableCpuCoresProbe do
 
   @behaviour DiagnosticProbe
 
-  def execute(nil, _snapshot) do
+  def execute(nil, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    ProbeResult.not_applicable(nil, nil, metadata.id, metadata.name, component_type, nil)
+    ProbeResult.not_applicable(
+      snapshot.cluster_identifier,
+      snapshot.identifier,
+      metadata.id,
+      metadata.name,
+      component_type,
+      nil
+    )
   end
 
   def execute(_config, nil) do

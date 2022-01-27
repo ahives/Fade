@@ -1,4 +1,4 @@
-defmodule Fade.Snapshot.BrokerConnectivity.DataMapper do
+defmodule Fade.Snapshot.BrokerConnectivityMapper do
   alias Fade.Snapshot.Types.{
     BrokerConnectivitySnapshot,
     ChannelSnapshot,

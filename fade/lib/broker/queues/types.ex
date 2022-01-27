@@ -79,6 +79,7 @@ defmodule Fade.Broker.Queue.Types do
     field(:backing_queue_status, BackingQueueStatus.t())
     field(:head_message_timestamp, DateTime.t())
     field(:message_bytes_persisted, integer())
+    field(:message_bytes_in_ram, integer())
     field(:total_bytes_of_messages_delivered_but_unacknowledged, integer())
     field(:total_bytes_of_messages_ready_for_delivery, integer())
     field(:total_bytes_of_all_messages, integer())
