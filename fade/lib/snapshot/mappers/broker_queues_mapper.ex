@@ -1,4 +1,4 @@
-defmodule Fade.Snapshot.BrokerQueuesMapper do
+defmodule Fade.Snapshot.Mapper.BrokerQueuesMapper do
   alias Fade.Snapshot.Types.{
     # BrokerQueueChurnMetrics,
     BrokerQueueSnapshot,
@@ -126,5 +126,5 @@ defmodule Fade.Snapshot.BrokerQueuesMapper do
 
   defp map_queue_depth(nil), do: QueueDepth.default()
 
-  defp map_queue_depth(data), do: QueueDepth.new(total: data.total, rate: data.rate)
+  defp map_queue_depth(total, rate), do: QueueDepth.new(total: total, rate: rate)
 end

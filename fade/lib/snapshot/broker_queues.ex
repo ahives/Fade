@@ -1,6 +1,6 @@
 defmodule Fade.Snapshot.BrokerQueues do
   alias Fade.Broker.{SystemOverview, Queue}
-  alias Fade.Snapshot.BrokerQueuesMapper, as: DataMapper
+  alias Fade.Snapshot.Mapper.BrokerQueuesMapper, as: DataMapper
   alias Fade.Snapshot.SnapshotResult
   alias UUID
 

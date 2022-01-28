@@ -9,7 +9,7 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
   }
 
   alias Fade.Diagnostic.IdentifierGeneration
-  alias Fade.Snapshot.Types.ChannelSnapshot
+  alias Fade.Snapshot.Types.QueueSnapshot
 
   @behaviour DiagnosticProbe
 
@@ -35,13 +35,11 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
   end
 
   @impl DiagnosticProbe
-  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: ChannelSnapshot.t()) ::
+  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: QueueSnapshot.t()) ::
           ProbeResult.t()
   def execute(config, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
-
-    channel_count = Enum.count(snapshot.channels)
 
     probe_data = [
       ProbeData.new(
@@ -77,7 +75,7 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
           nil
         )
 
-      _ ->
+      true ->
         ProbeResult.healthy(
           snapshot.node,
           snapshot.identifier,
@@ -93,14 +91,14 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.ChannelLimitReachedProbe"
+      "Fade.Diagnostic.Probes.ConsumerUtilizationProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "Channel Throttling Probe",
+      name: "Consumer Utilization Probe",
       description:
-        "Monitors connections to the RabbitMQ broker to determine whether channels are being throttled."
+        ""
     )
   end
 

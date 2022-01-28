@@ -1,6 +1,6 @@
 defmodule Fade.Snapshot.BrokerConnectivity do
   alias Fade.Broker.{Channel, Connection, SystemOverview}
-  alias Fade.Snapshot.BrokerConnectivityMapper, as: DataMapper
+  alias Fade.Snapshot.Mapper.BrokerConnectivityMapper, as: DataMapper
   alias Fade.Snapshot.SnapshotResult
   alias UUID
 
