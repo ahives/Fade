@@ -18,8 +18,6 @@ defmodule Fade.Snapshot.Types.QueueSnapshot do
     field(:consumer_utilization, integer())
     field(:idle_since, DateTime.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

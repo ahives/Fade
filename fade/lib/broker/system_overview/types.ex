@@ -8,9 +8,7 @@ defmodule Fade.Broker.SystemOverview.Types do
     field(:basic, list(integer))
     field(:detailed, list(integer))
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ExchangeType do
@@ -18,9 +16,7 @@ defmodule Fade.Broker.SystemOverview.Types do
     field(:description, String.t())
     field(:enabled, boolean())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: QueueMessageStats do
@@ -31,9 +27,7 @@ defmodule Fade.Broker.SystemOverview.Types do
     field(:total_messages, integer())
     field(:message_details, Rate.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ClusterObjectTotals do
@@ -43,9 +37,7 @@ defmodule Fade.Broker.SystemOverview.Types do
     field(:total_connections, integer())
     field(:total_channels, integer())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: MessageStats do
@@ -74,9 +66,7 @@ defmodule Fade.Broker.SystemOverview.Types do
     field(:total_messages_acknowledged, integer())
     field(:messages_acknowledged_details, Rate.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ChurnRates do
@@ -95,9 +85,7 @@ defmodule Fade.Broker.SystemOverview.Types do
     field(:total_queues_deleted, integer())
     field(:deleted_queue_details, Rate.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: SocketOptions do
@@ -108,9 +96,7 @@ defmodule Fade.Broker.SystemOverview.Types do
     field(:cowboy_opts, map())
     field(:port, integer())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: Listener do
@@ -120,19 +106,18 @@ defmodule Fade.Broker.SystemOverview.Types do
     field(:port, String.t())
     field(:socket_options, any())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: NodeContext do
     field(:description, String.t())
     field(:path, String.t())
     field(:port, String.t())
+    field(:ssl_opts, list(any))
+    field(:node, String.t())
+    field(:cowboy_opts, String.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: SystemOverviewInfo do
@@ -157,8 +142,6 @@ defmodule Fade.Broker.SystemOverview.Types do
     field(:listeners, list(Listener))
     field(:node_contexts, list(NodeContext))
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

@@ -16,9 +16,7 @@ defmodule Fade.Diagnostic.Types do
     field(:property_name, String.t())
     field(:property_value, any())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   # typedstruct module: DiagnosticProbe do
@@ -50,9 +48,7 @@ defmodule Fade.Diagnostic.Types do
     field(:name, String.t())
     field(:description, String.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: DiagnosticScannerMetadata do

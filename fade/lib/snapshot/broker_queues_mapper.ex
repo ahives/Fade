@@ -1,5 +1,6 @@
 defmodule Fade.Snapshot.BrokerQueuesMapper do
   alias Fade.Snapshot.Types.{
+    # BrokerQueueChurnMetrics,
     BrokerQueueSnapshot,
     PagedOut,
     QueueSnapshot,
@@ -19,7 +20,7 @@ defmodule Fade.Snapshot.BrokerQueuesMapper do
   def map_data(system_overview, queues) do
     BrokerQueueSnapshot.new(
       cluster_name: system_overview.cluster_name,
-      churn: map_churn_metrics(queues),
+      # churn: map_churn_metrics(queues),
       queues: map_queues(queues)
     )
   end

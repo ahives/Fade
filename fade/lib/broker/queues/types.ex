@@ -10,9 +10,7 @@ defmodule Fade.Broker.Queue.Types do
     field(:minimum_binary_virtual_heap_size, integer())
     field(:maximum_heap_size, integer())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: BackingQueueStatus do
@@ -30,9 +28,7 @@ defmodule Fade.Broker.Queue.Types do
     field(:avg_acknowledgement_ingress_rate, integer())
     field(:avg_acknowledgement_egress_rate, integer())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: QueueMessageStats do
@@ -53,9 +49,7 @@ defmodule Fade.Broker.Queue.Types do
     field(:total_messages_acknowledged, integer())
     field(:messages_acknowledged_details, Rate.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: QueueInfo do
@@ -98,8 +92,6 @@ defmodule Fade.Broker.Queue.Types do
     field(:memory, integer())
     field(:message_stats, QueueMessageStats.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end
