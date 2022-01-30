@@ -8,5 +8,7 @@ defmodule Fade.Snapshot.Types.OperatingSystemSnapshot do
     field(:process_id, String.t())
     field(:file_descriptors, FileDescriptorChurnMetrics.t())
     field(:socket_descriptors, SocketDescriptorChurnMetrics.t())
+
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

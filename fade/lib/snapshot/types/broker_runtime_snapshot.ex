@@ -10,5 +10,7 @@ defmodule Fade.Snapshot.Types.BrokerRuntimeSnapshot do
     field(:processes, RuntimeProcessChurnMetrics.t())
     field(:database, RuntimeDatabase.t())
     field(:gc, GarbageCollection.t())
+
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

@@ -26,8 +26,6 @@ defmodule Fade.Snapshot.Types.ConnectionSnapshot do
 
     field(:channels, list(ChannelSnapshot))
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

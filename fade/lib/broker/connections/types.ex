@@ -10,9 +10,7 @@ defmodule Fade.Broker.Connection.Types do
     field(:minimum_binary_virtual_heap_size, integer())
     field(:maximum_heap_size, integer())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ConnectionCapabilities do
@@ -23,9 +21,7 @@ defmodule Fade.Broker.Connection.Types do
     field(:exchange_binding_enabled, boolean())
     field(:publisher_confirms_enabled, boolean())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ConnectionClientProperties do
@@ -44,9 +40,7 @@ defmodule Fade.Broker.Connection.Types do
     field(:product, String.t())
     field(:version, String.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ConnectionInfo do
@@ -102,8 +96,6 @@ defmodule Fade.Broker.Connection.Types do
     field(:user_who_performed_action, String.t())
     field(:connection_client_properties, ConnectionClientProperties.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

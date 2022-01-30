@@ -12,8 +12,6 @@ defmodule Fade.Snapshot.Types.BrokerConnectivitySnapshot do
     field(:connections_created, ChurnMetrics.t())
     field(:connections, list(ConnectionSnapshot))
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

@@ -15,8 +15,6 @@ defmodule Fade.Snapshot.Types.ChannelSnapshot do
     field(:node, integer())
     field(:queue_operations, QueueOperationMetrics.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

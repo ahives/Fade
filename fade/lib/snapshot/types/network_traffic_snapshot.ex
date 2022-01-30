@@ -8,8 +8,6 @@ defmodule Fade.Snapshot.Types.NetworkTrafficSnapshot do
     field(:sent, Packets.t())
     field(:received, Packets.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

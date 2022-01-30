@@ -95,11 +95,11 @@
     "churn_rates": {
       "channel_closed": 52,
       "channel_closed_details": {
-        "rate": 0.0
+        "rate": 100.0
       },
       "channel_created": 61,
       "channel_created_details": {
-        "rate": 1.4
+        "rate": 100.4
       },
       "connection_closed": 12,
       "connection_closed_details": {

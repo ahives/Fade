@@ -24,5 +24,7 @@ defmodule Fade.Snapshot.Types.NodeSnapshot do
     field(:runtime, BrokerRuntimeSnapshot.t())
     field(:memory, MemorySnapshot.t())
     field(:context_switching, ContextSwitchingDetails.t())
+
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end
