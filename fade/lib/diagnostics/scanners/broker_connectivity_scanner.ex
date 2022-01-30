@@ -1,7 +1,8 @@
 defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
-  alias Fade.Diagnostic.Scanner.DiagnosticScanner
   alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
   alias Fade.Diagnostic.Config.Types.ProbesConfig
+  alias Fade.Diagnostic.Scanner.DiagnosticScanner
+  alias Fade.Diagnostic.Types.ProbeResult
   alias Fade.Snapshot.Types.BrokerConnectivitySnapshot
 
   @behaviour DiagnosticScanner
@@ -12,6 +13,7 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
   end
 
   @impl DiagnosticScanner
+  @spec scan(probes :: list(any), snapshot :: BrokerConnectivitySnapshot.t()) :: list(ProbeResult)
   def scan(probes, snapshot) do
     config =
       DiagnosticsConfig.new(

@@ -37,7 +37,7 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
   @impl DiagnosticProbe
   @spec execute(config :: DiagnosticsConfig.t(), snapshot :: ConnectionSnapshot.t()) ::
           ProbeResult.t()
-  def execute(config, snapshot) do
+  def execute(_config, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
 

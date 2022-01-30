@@ -42,7 +42,7 @@ defmodule Fade.Snapshot.Types do
 
     def new(fields), do: struct!(__MODULE__, fields)
 
-    def default, do: new(total: 0, paged_out: PagedOut.default(), ram: RAM.default())
+    def default(), do: new(total: 0, paged_out: PagedOut.default(), ram: RAM.default())
   end
 
   typedstruct module: QueueInternals do
@@ -70,7 +70,7 @@ defmodule Fade.Snapshot.Types do
 
     def new(fields), do: struct!(__MODULE__, fields)
 
-    def default, do: new(total: 0, bytes: 0, target: 0, unacknowledged: 0, ready: 0)
+    def default(), do: new(total: 0, bytes: 0, target: 0, unacknowledged: 0, ready: 0)
   end
 
   typedstruct module: PagedOut do
@@ -79,7 +79,7 @@ defmodule Fade.Snapshot.Types do
 
     def new(fields), do: struct!(__MODULE__, fields)
 
-    def default, do: new(total: 0, bytes: 0)
+    def default(), do: new(total: 0, bytes: 0)
   end
 
   typedstruct module: Reductions do
@@ -111,6 +111,8 @@ defmodule Fade.Snapshot.Types do
     field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default(), do: new(total: 0, bytes: 0, rate: 0.0)
   end
 
   typedstruct module: QueueOperation do

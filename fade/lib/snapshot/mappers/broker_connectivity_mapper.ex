@@ -132,7 +132,7 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
   end
 
   defp map_network_traffic(nil) do
-    nil
+    NetworkTrafficSnapshot.default()
   end
 
   defp map_network_traffic(connection) do

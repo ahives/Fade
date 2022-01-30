@@ -41,8 +41,6 @@ defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    channel_count = Enum.count(snapshot.channels)
-
     probe_data = [
       ProbeData.new(
         property_name: "unacknowledged_messages",

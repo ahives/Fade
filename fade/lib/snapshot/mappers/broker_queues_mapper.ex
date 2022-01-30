@@ -124,7 +124,7 @@ defmodule Fade.Snapshot.Mapper.BrokerQueuesMapper do
     )
   end
 
-  defp map_queue_depth(nil), do: QueueDepth.default()
+  defp map_queue_depth(nil, nil), do: QueueDepth.default()
 
   defp map_queue_depth(total, rate), do: QueueDepth.new(total: total, rate: rate)
 end

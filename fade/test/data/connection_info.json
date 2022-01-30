@@ -1,5 +1,6 @@
 [
     {
+      "max_frame_size_in_bytes": 82984,
       "auth_mechanism": "PLAIN",
       "channel_max": 2047,
       "channels": 0,
@@ -75,6 +76,7 @@
       "vhost": "TestVirtualHost"
     },
     {
+      "max_frame_size_in_bytes": 82984,
       "auth_mechanism": "PLAIN",
       "channel_max": 2047,
       "channels": 0,
