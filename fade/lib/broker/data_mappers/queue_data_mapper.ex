@@ -1,8 +1,8 @@
-defmodule Fade.Broker.Queue.DataMapper do
+defmodule Fade.Broker.QueueDataMapper, as: DataMapper do
   alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
 
-  alias Fade.Broker.Queue.Types.{
+  alias Fade.Broker.QueueTypes.{
     BackingQueueStatus,
     GarbageCollectionDetails,
     QueueInfo,

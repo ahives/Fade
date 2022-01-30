@@ -10,9 +10,9 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
     QueueOperationMetrics
   }
 
-  alias Fade.Broker.SystemOverview.Types.SystemOverviewInfo
-  alias Fade.Broker.Channel.Types.ChannelInfo
-  alias Fade.Broker.Connection.Types.ConnectionInfo
+  alias Fade.Broker.SystemOverviewTypes.SystemOverviewInfo
+  alias Fade.Broker.ChannelTypes.ChannelInfo
+  alias Fade.Broker.ConnectionTypes.ConnectionInfo
 
   @spec map_data(
           system_overview :: SystemOverviewInfo.t(),

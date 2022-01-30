@@ -4,7 +4,7 @@ defmodule Fade.Broker.Channel do
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
   alias Fade.Broker.Core.ResultMapper
-  alias Fade.Broker.Channel.DataMapper
+  alias Fade.Broker.ChannelDataMapper, as: DataMapper
 
   def get_all(config = %BrokerConfig{}) when not is_nil(config) do
     config

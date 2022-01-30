@@ -1,4 +1,4 @@
-defmodule Fade.Broker.VirtualHost.Types do
+defmodule Fade.Broker.VirtualHostTypes do
   use TypedStruct
 
   alias Fade.Broker.Core.Types.Rate
@@ -25,9 +25,7 @@ defmodule Fade.Broker.VirtualHost.Types do
     field(:total_message_delivery_gets, integer())
     field(:message_delivery_gets_details, Rate.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: VirtualHostInfo do
@@ -46,8 +44,6 @@ defmodule Fade.Broker.VirtualHost.Types do
     field(:ready_messages, integer())
     field(:ready_message_details, Rate.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

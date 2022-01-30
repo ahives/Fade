@@ -1,5 +1,5 @@
-defmodule Fade.Broker.Bindings.DataMapper do
-  alias Fade.Broker.Bindings.Types.BindingInfo
+defmodule Fade.Broker.BindingDataMapper do
+  alias Fade.Broker.Types.BindingTypes.BindingInfo
   alias Fade.Broker.DataMapper
 
   @behaviour DataMapper

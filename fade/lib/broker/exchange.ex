@@ -2,7 +2,7 @@ defmodule Fade.Broker.Exchange do
   alias Fade.Broker
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker.Core.ResultMapper
-  alias Fade.Broker.Exchange.DataMapper
+  alias Fade.Broker.ExchangeDataMapper, as: DataMapper
 
   @doc """
   Returns all exchanges on the current RabbitMQ node.

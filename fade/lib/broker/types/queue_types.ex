@@ -1,4 +1,4 @@
-defmodule Fade.Broker.Queue.Types do
+defmodule Fade.Broker.QueueTypes do
   use TypedStruct
 
   alias Fade.Broker.Core.Types.Rate

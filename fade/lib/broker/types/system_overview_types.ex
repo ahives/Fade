@@ -1,4 +1,4 @@
-defmodule Fade.Broker.SystemOverview.Types do
+defmodule Fade.Broker.SystemOverviewTypes do
   use TypedStruct
 
   alias Fade.Broker.Core.Types.Rate

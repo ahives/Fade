@@ -1,5 +1,5 @@
-defmodule Fade.Broker.Connection.DataMapper do
-  alias Fade.Broker.Connection.Types.{
+defmodule Fade.Broker.ConnectionDataMapper do
+  alias Fade.Broker.ConnectionTypes.{
     ConnectionCapabilities,
     ConnectionClientProperties,
     ConnectionInfo,

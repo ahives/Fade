@@ -3,7 +3,7 @@ defmodule Fade.Broker.Connection do
 
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
-  alias Fade.Broker.Connection.DataMapper
+  alias Fade.Broker.ConnectionDataMapper, as: DataMapper
   alias Fade.Broker.Core.ResultMapper
 
   def get_all(config = %BrokerConfig{}) when not is_nil(config) do

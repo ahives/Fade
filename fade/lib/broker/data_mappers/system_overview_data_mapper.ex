@@ -1,8 +1,8 @@
-defmodule Fade.Broker.SystemOverview.DataMapper do
+defmodule Fade.Broker.SystemOverviewDataMapper do
   alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
 
-  alias Fade.Broker.SystemOverview.Types.{
+  alias Fade.Broker.SystemOverviewTypes.{
     SampleRetentionPolicies,
     ExchangeType,
     QueueMessageStats,

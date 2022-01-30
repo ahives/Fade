@@ -1,7 +1,7 @@
-defmodule Fade.Broker.Exchange.DataMapper do
+defmodule Fade.Broker.ExchangeDataMapper do
   alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
-  alias Fade.Broker.Exchange.Types.ExchangeInfo
+  alias Fade.Broker.ExchangeTypes.ExchangeInfo
 
   @behaviour DataMapper
 

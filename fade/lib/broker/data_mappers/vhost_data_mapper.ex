@@ -1,7 +1,7 @@
-defmodule Fade.Broker.VirtualHost.DataMapper do
+defmodule Fade.Broker.VirtualHostDataMapper do
   alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
-  alias Fade.Broker.VirtualHost.Types.{MessageStats, VirtualHostInfo}
+  alias Fade.Broker.VirtualHostTypes.{MessageStats, VirtualHostInfo}
 
   @behaviour DataMapper
 

@@ -1,7 +1,7 @@
 defmodule Fade.Broker.VirtualHost do
   alias Fade.Broker
   alias Fade.Broker.Core.ResultMapper
-  alias Fade.Broker.VirtualHost.DataMapper
+  alias Fade.Broker.VirtualHostDataMapper, as: DataMapper
   alias Fade.Config.Types.BrokerConfig
 
   @doc """

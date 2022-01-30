@@ -1,4 +1,4 @@
-defmodule Fade.Broker.Channel.Types do
+defmodule Fade.Broker.ChannelTypes do
   use TypedStruct
 
   alias Fade.Broker.Core.Types.Rate
@@ -25,9 +25,7 @@ defmodule Fade.Broker.Channel.Types do
     field(:total_messages_acknowledged, integer())
     field(:messages_acknowledged_details, Rate.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: GarbageCollectionDetails do
@@ -37,9 +35,7 @@ defmodule Fade.Broker.Channel.Types do
     field(:minimum_binary_virtual_heap_size, integer())
     field(:maximum_heap_size, integer())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ConnectionDetails do
@@ -47,9 +43,7 @@ defmodule Fade.Broker.Channel.Types do
     field(:peer_port, integer())
     field(:name, String.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ChannelInfo do
@@ -95,8 +89,6 @@ defmodule Fade.Broker.Channel.Types do
     field(:idle_since, integer())
     field(:operation_stats, ChannelOperationStats.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

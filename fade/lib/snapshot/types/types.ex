@@ -35,6 +35,27 @@ defmodule Fade.Snapshot.Types do
     def new(fields), do: struct!(__MODULE__, fields)
   end
 
+  typedstruct module: RAM do
+    field(:total, integer())
+    field(:bytes, integer())
+    field(:target, integer())
+    field(:unacknowledged, integer())
+    field(:ready, integer())
+
+    def new(fields), do: struct!(__MODULE__, fields)
+
+    def default(), do: new(total: 0, bytes: 0, target: 0, unacknowledged: 0, ready: 0)
+  end
+
+  typedstruct module: PagedOut do
+    field(:total, integer())
+    field(:bytes, integer())
+
+    def new(fields), do: struct!(__MODULE__, fields)
+
+    def default(), do: new(total: 0, bytes: 0)
+  end
+
   typedstruct module: QueueMemoryDetails do
     field(:total, integer())
     field(:paged_out, PagedOut.t())
@@ -59,27 +80,6 @@ defmodule Fade.Snapshot.Types do
     field(:avg_acknowledgement_egress_rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
-  end
-
-  typedstruct module: RAM do
-    field(:total, integer())
-    field(:bytes, integer())
-    field(:target, integer())
-    field(:unacknowledged, integer())
-    field(:ready, integer())
-
-    def new(fields), do: struct!(__MODULE__, fields)
-
-    def default(), do: new(total: 0, bytes: 0, target: 0, unacknowledged: 0, ready: 0)
-  end
-
-  typedstruct module: PagedOut do
-    field(:total, integer())
-    field(:bytes, integer())
-
-    def new(fields), do: struct!(__MODULE__, fields)
-
-    def default(), do: new(total: 0, bytes: 0)
   end
 
   typedstruct module: Reductions do

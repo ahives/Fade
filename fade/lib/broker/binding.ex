@@ -4,9 +4,9 @@ defmodule Fade.Broker.Binding do
   alias Fade.Sanitizer
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
-  alias Fade.Broker.Bindings.Types.{BindingCriteria, BindingDefinition}
+  alias Fade.Broker.BindingTypes.{BindingCriteria, BindingDefinition}
   alias Fade.Broker.Core.ResultMapper
-  alias Fade.Broker.Bindings.DataMapper
+  alias Fade.Broker.BindingDataMapper, as: DataMapper
 
   @doc """
   Returns all bindings on the current RabbitMQ node.

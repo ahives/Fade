@@ -4,7 +4,7 @@ defmodule Fade.Broker.SystemOverview do
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
   alias Fade.Broker.Core.ResultMapper
-  alias Fade.Broker.SystemOverview.DataMapper
+  alias Fade.Broker.SystemOverviewDataMapper, as: DataMapper
 
   @doc """
   Returns various bits of random information that describe the RabbitMQ system.

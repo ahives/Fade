@@ -1,4 +1,4 @@
-defmodule Fade.Broker.Bindings.Types do
+defmodule Fade.Broker.BindingTypes do
   use TypedStruct
   require Protocol
 
@@ -8,9 +8,7 @@ defmodule Fade.Broker.Bindings.Types do
     field(:value, String.t())
     field(:error, %Error{})
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: BindingInfo do
@@ -22,9 +20,7 @@ defmodule Fade.Broker.Bindings.Types do
     field(:arguments, map(), default: %{})
     field(:properties_key, String.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
 
     # def from_map(map) do
     #   %BindingInfo{
@@ -51,9 +47,7 @@ defmodule Fade.Broker.Bindings.Types do
     field(:routing_key, String.t())
     field(:arguments, map())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   Protocol.derive(Jason.Encoder, Fade.Broker.Bindings.Types.BindingInfo)

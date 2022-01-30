@@ -1,4 +1,4 @@
-defmodule Fade.Broker.Exchange.Types do
+defmodule Fade.Broker.ExchangeTypes do
   use TypedStruct
 
   typedstruct module: ExchangeInfo do
@@ -11,8 +11,6 @@ defmodule Fade.Broker.Exchange.Types do
     field(:internal, boolean())
     field(:arguments, map())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end
