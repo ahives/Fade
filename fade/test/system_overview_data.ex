@@ -7,7 +7,8 @@ defmodule SystemOverviewData do
     SampleRetentionPolicies,
     ExchangeType,
     ChurnRates,
-    MessageStats
+    MessageStats,
+    NodeContext
   }
 
   alias Fade.Broker.Core.Types.Rate

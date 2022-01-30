@@ -37,7 +37,7 @@ defmodule Fade.Broker.Channel.DataMapper do
         peer_certificate_issuer: channel["peer_certificate_issuer"],
         peer_certificate_subject: channel["peer_certificate_subject"],
         ssl: channel["ssl"],
-        peer_host: String.to_atom(channel["peer_host"]),
+        peer_host: PrimitiveDataMapper.to_atom(channel["peer_host"]),
         host: channel["host"],
         peer_port: channel["peer_port"],
         port: channel["port"],
@@ -45,7 +45,7 @@ defmodule Fade.Broker.Channel.DataMapper do
         connection_details: map_connection_details(channel["connection_details"]),
         garbage_collection_details:
           map_garbage_collection_details(channel["garbage_collection_details"]),
-        state: String.to_atom(channel["state"]),
+        state: PrimitiveDataMapper.to_atom(channel["state"]),
         total_channels: channel["total_channels"],
         sent_pending: channel["sent_pending"],
         global_prefetch_count: channel["global_prefetch_count"],

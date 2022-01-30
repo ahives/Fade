@@ -54,20 +54,23 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
   defp map_channels(channels, connection_name) do
     channels
     |> Stream.reject(&is_nil/1)
-    |> Enum.map(fn channel ->
-      ChannelSnapshot.new(
-        prefetch_count: channel.prefetch_count,
-        uncommitted_acknowledgements: channel.uncommitted_acknowledgements,
-        uncommitted_messages: channel.uncommitted_messages,
-        unconfirmed_messages: channel.unconfirmed_messages,
-        unacknowledged_messages: channel.unacknowledged_messages,
-        consumers: channel.total_consumers,
-        identifier: channel.name,
-        connection_identifier: connection_name,
-        node: channel.node,
-        queue_operations: map_queue_operations(channel.operation_stats)
-      )
+    |> Stream.map(fn channel ->
+      if channel.connection_details.name == connection_name do
+        ChannelSnapshot.new(
+          prefetch_count: channel.prefetch_count,
+          uncommitted_acknowledgements: channel.uncommitted_acknowledgements,
+          uncommitted_messages: channel.uncommitted_messages,
+          unconfirmed_messages: channel.unconfirmed_messages,
+          unacknowledged_messages: channel.unacknowledged_messages,
+          consumers: channel.total_consumers,
+          identifier: channel.name,
+          connection_identifier: connection_name,
+          node: channel.node,
+          queue_operations: map_queue_operations(channel.operation_stats)
+        )
+      end
     end)
+    |> Enum.reject(&is_nil/1)
   end
 
   defp map_queue_operations(nil) do
@@ -151,11 +154,7 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
   end
 
   defp map_packets(total, bytes, rate) do
-    Packets.new(
-      total: total,
-      bytes: bytes,
-      rate: rate
-    )
+    Packets.new(total: total, bytes: bytes, rate: rate)
   end
 
   defp map_connections(nil, _channels) do

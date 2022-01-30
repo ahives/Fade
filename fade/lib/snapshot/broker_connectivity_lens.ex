@@ -1,9 +1,13 @@
-defmodule Fade.Snapshot.BrokerConnectivity do
+defmodule Fade.Snapshot.BrokerConnectivityLens do
   alias Fade.Broker.{Channel, Connection, SystemOverview}
+  alias Fade.Snapshot.Lens
   alias Fade.Snapshot.Mapper.BrokerConnectivityMapper, as: DataMapper
   alias Fade.Snapshot.SnapshotResult
   alias UUID
 
+  @behaviour Lens
+
+  @impl Lens
   def take_snapshot(config) do
     system_overview_result =
       Task.async(fn -> config |> SystemOverview.get() end)

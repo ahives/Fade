@@ -97,8 +97,7 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
     DiagnosticProbeMetadata.new(
       id: id,
       name: "Consumer Utilization Probe",
-      description:
-        ""
+      description: ""
     )
   end
 
