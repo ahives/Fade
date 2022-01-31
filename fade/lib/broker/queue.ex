@@ -4,7 +4,7 @@ defmodule Fade.Broker.Queue do
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
   alias Fade.Broker.Core.ResultMapper
-  alias Fade.Broker.Queue.DataMapper
+  alias Fade.Broker.QueueDataMapper, as: DataMapper
 
   @doc """
   Returns all queues on the current RabbitMQ node.

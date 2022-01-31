@@ -83,6 +83,10 @@ defmodule Fade.Broker.SystemOverviewDataMapper do
     end
   end
 
+  defp map_cluster_object_totals(nil) do
+    ClusterObjectTotals.default()
+  end
+
   defp map_cluster_object_totals(data) do
     ClusterObjectTotals.new(
       total_consumers: data["consumers"],
@@ -91,6 +95,10 @@ defmodule Fade.Broker.SystemOverviewDataMapper do
       total_connections: data["connections"],
       total_channels: data["channels"]
     )
+  end
+
+  defp map_queue_message_stats(nil) do
+    QueueMessageStats.default()
   end
 
   defp map_queue_message_stats(data) do
@@ -104,6 +112,10 @@ defmodule Fade.Broker.SystemOverviewDataMapper do
       total_messages: data["messages"],
       message_details: PrimitiveDataMapper.map_rate(data["messages_details"])
     )
+  end
+
+  defp map_churn_rates(nil) do
+    ChurnRates.default()
   end
 
   defp map_churn_rates(data) do

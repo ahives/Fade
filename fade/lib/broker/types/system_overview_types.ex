@@ -28,6 +28,17 @@ defmodule Fade.Broker.SystemOverviewTypes do
     field(:message_details, Rate.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default(),
+      do:
+        new(
+          total_messages_ready_for_delivery: 0,
+          messages_ready_for_delivery_details: Rate.default(),
+          total_unacknowledged_delivered_messages: 0,
+          unacknowledged_delivered_message_details: Rate.default(),
+          total_messages: 0,
+          message_details: Rate.default()
+        )
   end
 
   typedstruct module: ClusterObjectTotals do
@@ -38,6 +49,16 @@ defmodule Fade.Broker.SystemOverviewTypes do
     field(:total_channels, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default(),
+      do:
+        new(
+          total_consumers: 0,
+          total_queues: 0,
+          total_exchanges: 0,
+          total_connections: 0,
+          total_channels: 0
+        )
   end
 
   typedstruct module: MessageStats do
@@ -86,6 +107,25 @@ defmodule Fade.Broker.SystemOverviewTypes do
     field(:deleted_queue_details, Rate.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default(),
+      do:
+        new(
+          total_channels_closed: 0,
+          closed_channel_details: Rate.default(),
+          total_channels_created: 0,
+          created_channel_details: Rate.default(),
+          total_connections_closed: 0,
+          closed_connections_details: Rate.default(),
+          total_connections_created: 0,
+          created_connection_details: Rate.default(),
+          total_queues_created: 0,
+          created_queue_details: Rate.default(),
+          total_queues_declared: 0,
+          declared_queue_details: Rate.default(),
+          total_queues_deleted: 0,
+          deleted_queue_details: Rate.default()
+        )
   end
 
   typedstruct module: SocketOptions do

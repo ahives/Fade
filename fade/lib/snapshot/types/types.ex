@@ -103,6 +103,8 @@ defmodule Fade.Snapshot.Types do
     field(:rate, Rate.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default(), do: new(total: 0, rate: 0)
   end
 
   typedstruct module: Packets do

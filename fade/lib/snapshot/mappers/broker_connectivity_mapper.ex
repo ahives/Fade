@@ -177,6 +177,18 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
     end)
   end
 
+  defp map_churn_metrics(nil, rate) do
+    ChurnMetrics.new(total: 0, rate: rate)
+  end
+
+  defp map_churn_metrics(total, nil) do
+    ChurnMetrics.new(total: total, rate: 0)
+  end
+
+  defp map_churn_metrics(nil, nil) do
+    ChurnMetrics.default()
+  end
+
   defp map_churn_metrics(total, rate) do
     ChurnMetrics.new(total: total, rate: rate)
   end
