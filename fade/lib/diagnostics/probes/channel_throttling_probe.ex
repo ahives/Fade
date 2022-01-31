@@ -8,6 +8,7 @@ defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
     ProbeResult
   }
 
+  alias Fade.Diagnostic.Types.KnowledgeBaseArticle
   alias Fade.Diagnostic.IdentifierGeneration
   alias Fade.Snapshot.Types.ChannelSnapshot
 
@@ -17,13 +18,16 @@ defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
+    article =
+      KnowledgeBaseArticle.new(reason: "Probe cannot execute properly without configuration.")
+
     ProbeResult.not_applicable(
       snapshot.connection_identifier,
       snapshot.identifier,
       metadata.id,
       metadata.name,
       component_type,
-      nil
+      article
     )
   end
 
@@ -31,7 +35,8 @@ defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, nil)
+    article = KnowledgeBaseArticle.new(reason: "Probe cannot execute on empty data.")
+    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, article)
   end
 
   @impl DiagnosticProbe
@@ -54,6 +59,14 @@ defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
 
     case compare_probe_readout(snapshot.unacknowledged_messages, snapshot.prefetch_count) do
       true ->
+        article =
+          KnowledgeBaseArticle.new(
+            reason:
+              "Unacknowledged messages on channel exceeds prefetch count causing the RabbitMQ broker to stop delivering messages to consumers.",
+            remediation:
+              "Acknowledged messages must be greater than or equal to the result of subtracting the number of unacknowledged messages from the prefetch count plus 1. Temporarily increase the number of consumers or prefetch count."
+          )
+
         ProbeResult.unhealthy(
           snapshot.connection_identifier,
           snapshot.identifier,
@@ -61,10 +74,15 @@ defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
           metadata.name,
           component_type,
           probe_data,
-          nil
+          article
         )
 
       false ->
+        article =
+          KnowledgeBaseArticle.new(
+            reason: "Unacknowledged messages on channel is less than prefetch count."
+          )
+
         ProbeResult.healthy(
           snapshot.connection_identifier,
           snapshot.identifier,
@@ -72,7 +90,7 @@ defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
           metadata.name,
           component_type,
           probe_data,
-          nil
+          article
         )
     end
   end

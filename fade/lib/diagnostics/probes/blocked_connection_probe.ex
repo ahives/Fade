@@ -8,6 +8,7 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
     ProbeResult
   }
 
+  alias Fade.Diagnostic.Types.KnowledgeBaseArticle
   alias Fade.Diagnostic.IdentifierGeneration
   alias Fade.Snapshot.Types.ConnectionSnapshot
 
@@ -17,13 +18,16 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
+    article =
+      KnowledgeBaseArticle.new(reason: "Probe cannot execute properly without configuration.")
+
     ProbeResult.not_applicable(
       snapshot.node_identifier,
       snapshot.identifier,
       metadata.id,
       metadata.name,
       component_type,
-      nil
+      article
     )
   end
 
@@ -31,7 +35,8 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, nil)
+    article = KnowledgeBaseArticle.new(reason: "Probe cannot execute on empty data.")
+    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, article)
   end
 
   @impl DiagnosticProbe
@@ -50,6 +55,12 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
 
     case snapshot.state do
       :blocked ->
+        article =
+          KnowledgeBaseArticle.new(
+            reason:
+              "The connection is blocked meaning that an application has published but is now prevented from consuming. This is not the case with consume only connections."
+          )
+
         ProbeResult.unhealthy(
           snapshot.node_identifier,
           snapshot.identifier,
@@ -57,10 +68,15 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
           metadata.name,
           component_type,
           probe_data,
-          nil
+          article
         )
 
       _ ->
+        article =
+          KnowledgeBaseArticle.new(
+            reason: "Client applications are able to publish and/or consume on this connection."
+          )
+
         ProbeResult.healthy(
           snapshot.node_identifier,
           snapshot.identifier,
@@ -68,7 +84,7 @@ defmodule Fade.Diagnostic.Probes.BlockedConnectionProbe do
           metadata.name,
           component_type,
           probe_data,
-          nil
+          article
         )
     end
   end

@@ -8,6 +8,7 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
     ProbeResult
   }
 
+  alias Fade.Diagnostic.Types.KnowledgeBaseArticle
   alias Fade.Diagnostic.IdentifierGeneration
   alias Fade.Snapshot.Types.QueueSnapshot
 
@@ -17,13 +18,16 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
+    article =
+      KnowledgeBaseArticle.new(reason: "Probe cannot execute properly without configuration.")
+
     ProbeResult.not_applicable(
       snapshot.connection_identifier,
       snapshot.identifier,
       metadata.id,
       metadata.name,
       component_type,
-      nil
+      article
     )
   end
 
@@ -31,7 +35,8 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, nil)
+    article = KnowledgeBaseArticle.new(reason: "Probe cannot execute on empty data.")
+    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, article)
   end
 
   @impl DiagnosticProbe
@@ -54,6 +59,14 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
 
     cond do
       is_warning(snapshot.consumer_utilization, config.probes.consumer_utilization_threshold) ->
+        article =
+          KnowledgeBaseArticle.new(
+            reason:
+              "The queue is not able to push messages to consumers efficiently due to network congestion and/or the prefetch limit on the consumer being set too low.",
+            remediation:
+              "Check your network connection between the consumer and RabbitMQ node and/or readjust the prefetch limit."
+          )
+
         ProbeResult.warning(
           snapshot.node,
           snapshot.identifier,
@@ -61,10 +74,18 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
           metadata.name,
           component_type,
           probe_data,
-          nil
+          article
         )
 
       is_unhealthy(snapshot.consumer_utilization, config.probes.consumer_utilization_threshold) ->
+        article =
+          KnowledgeBaseArticle.new(
+            reason:
+              "The queue is not able to push messages to consumers efficiently due to network congestion and/or the prefetch limit on the consumer being set too low.",
+            remediation:
+              "Check your network connection between the consumer and RabbitMQ node and/or readjust the prefetch limit."
+          )
+
         ProbeResult.unhealthy(
           snapshot.node,
           snapshot.identifier,
@@ -72,10 +93,16 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
           metadata.name,
           component_type,
           probe_data,
-          nil
+          article
         )
 
       true ->
+        article =
+          KnowledgeBaseArticle.new(
+            reason:
+              "The queue is able to efficiently push messages to consumers as fast as possible without delay."
+          )
+
         ProbeResult.healthy(
           snapshot.node,
           snapshot.identifier,
@@ -83,7 +110,7 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
           metadata.name,
           component_type,
           probe_data,
-          nil
+          article
         )
     end
   end

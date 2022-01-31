@@ -8,6 +8,7 @@ defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
     ProbeResult
   }
 
+  alias Fade.Diagnostic.Types.KnowledgeBaseArticle
   alias Fade.Diagnostic.IdentifierGeneration
   alias Fade.Snapshot.Types.BrokerConnectivitySnapshot
 
@@ -17,14 +18,18 @@ defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    ProbeResult.not_applicable(nil, nil, metadata.id, metadata.name, component_type, nil)
+    article =
+      KnowledgeBaseArticle.new(reason: "Probe cannot execute properly without configuration.")
+
+    ProbeResult.not_applicable(nil, nil, metadata.id, metadata.name, component_type, article)
   end
 
   def execute(_config, nil) do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, nil)
+    article = KnowledgeBaseArticle.new(reason: "Probe cannot execute on empty data.")
+    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, article)
   end
 
   @impl DiagnosticProbe
@@ -50,10 +55,38 @@ defmodule Fade.Diagnostic.Probes.HighConnectionClosureRateProbe do
            config.probes.high_connection_closure_rate_threshold
          ) do
       true ->
-        ProbeResult.warning(nil, nil, metadata.id, metadata.name, component_type, probe_data, nil)
+        article =
+          KnowledgeBaseArticle.new(
+            reason:
+              "The rate at which connections to the broker are closed is greater than the specified threshold."
+          )
+
+        ProbeResult.warning(
+          nil,
+          nil,
+          metadata.id,
+          metadata.name,
+          component_type,
+          probe_data,
+          article
+        )
 
       false ->
-        ProbeResult.healthy(nil, nil, metadata.id, metadata.name, component_type, probe_data, nil)
+        article =
+          KnowledgeBaseArticle.new(
+            reason:
+              "The rate at which connections to the broker are being closed is less than the specified threshold."
+          )
+
+        ProbeResult.healthy(
+          nil,
+          nil,
+          metadata.id,
+          metadata.name,
+          component_type,
+          probe_data,
+          article
+        )
     end
   end
 

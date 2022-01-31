@@ -8,6 +8,7 @@ defmodule Fade.Diagnostic.Probes.ChannelLimitReachedProbe do
     ProbeResult
   }
 
+  alias Fade.Diagnostic.Types.KnowledgeBaseArticle
   alias Fade.Diagnostic.IdentifierGeneration
   alias Fade.Snapshot.Types.ConnectionSnapshot
 
@@ -17,14 +18,26 @@ defmodule Fade.Diagnostic.Probes.ChannelLimitReachedProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    ProbeResult.not_applicable(nil, nil, metadata.id, metadata.name, component_type, nil)
+    article =
+      KnowledgeBaseArticle.new(
+        reason: "Probe cannot execute properly without configuration.",
+        remediation: nil
+      )
+
+    ProbeResult.not_applicable(nil, nil, metadata.id, metadata.name, component_type, article)
   end
 
   def execute(_config, nil) do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, nil)
+    article =
+      KnowledgeBaseArticle.new(
+        reason: "Probe cannot execute on empty data.",
+        remediation: nil
+      )
+
+    ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, article)
   end
 
   @impl DiagnosticProbe
@@ -49,6 +62,13 @@ defmodule Fade.Diagnostic.Probes.ChannelLimitReachedProbe do
 
     case compare_probe_readout(channel_count, snapshot.open_channels_limit) do
       true ->
+        article =
+          KnowledgeBaseArticle.new(
+            reason: "Number of channels on connection exceeds the defined limit.",
+            remediation:
+              "Adjust application settings to reduce the number of connections to the RabbitMQ broker."
+          )
+
         ProbeResult.unhealthy(
           snapshot.node_identifier,
           snapshot.identifier,
@@ -56,10 +76,15 @@ defmodule Fade.Diagnostic.Probes.ChannelLimitReachedProbe do
           metadata.name,
           component_type,
           probe_data,
-          nil
+          article
         )
 
       false ->
+        article =
+          KnowledgeBaseArticle.new(
+            reason: "Number of channels on connection is less than defined limit."
+          )
+
         ProbeResult.healthy(
           snapshot.node_identifier,
           snapshot.identifier,
@@ -67,7 +92,7 @@ defmodule Fade.Diagnostic.Probes.ChannelLimitReachedProbe do
           metadata.name,
           component_type,
           probe_data,
-          nil
+          article
         )
     end
   end
