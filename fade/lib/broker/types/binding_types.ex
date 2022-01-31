@@ -50,5 +50,5 @@ defmodule Fade.Broker.BindingTypes do
     def new(fields), do: struct!(__MODULE__, fields)
   end
 
-  Protocol.derive(Jason.Encoder, Fade.Broker.Bindings.Types.BindingInfo)
+  Protocol.derive(Jason.Encoder, Fade.Broker.BindingTypes.BindingInfo)
 end

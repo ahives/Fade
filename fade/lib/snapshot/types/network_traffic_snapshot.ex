@@ -10,6 +10,7 @@ defmodule Fade.Snapshot.Types.NetworkTrafficSnapshot do
 
     def new(fields), do: struct!(__MODULE__, fields)
 
-    def default(), do: new(max_frame_size: 0, sent: Packets.default(), received: Packets.default())
+    def default(),
+      do: new(max_frame_size: 0, sent: Packets.default(), received: Packets.default())
   end
 end

@@ -1,4 +1,4 @@
-defmodule Fade.Broker.QueueDataMapper, as: DataMapper do
+defmodule Fade.Broker.QueueDataMapper do
   alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
 

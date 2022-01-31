@@ -1,5 +1,5 @@
 defmodule Fade.Broker.ChannelDataMapper do
-  alias Fade.Broker.Channel.Types.{
+  alias Fade.Broker.ChannelTypes.{
     ChannelOperationStats,
     ChannelInfo,
     ConnectionDetails,
