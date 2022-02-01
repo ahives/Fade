@@ -98,6 +98,15 @@ defmodule Fade.Snapshot.Types do
     def default, do: new(total: 0, rate: 0)
   end
 
+  typedstruct module: DiskCapacityDetails do
+    field(:available, integer())
+    field(:rate, Rate.t())
+
+    def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(available: 0, rate: 0)
+  end
+
   typedstruct module: ChurnMetrics do
     field(:total, integer())
     field(:rate, Rate.t())
@@ -270,10 +279,10 @@ defmodule Fade.Snapshot.Types do
   end
 
   typedstruct module: IO do
-    field(:Reads, DiskUsageDetails.t())
-    field(:Writes, DiskUsageDetails.t())
-    field(:Seeks, DiskUsageDetails.t())
-    field(:FileHandles, FileHandles.t())
+    field(:reads, DiskUsageDetails.t())
+    field(:writes, DiskUsageDetails.t())
+    field(:seeks, DiskUsageDetails.t())
+    field(:fileHandles, FileHandles.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
   end

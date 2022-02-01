@@ -77,10 +77,7 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
   defp get_channel_probe_readout(config, probes, channel_snapshots) do
     channel_snapshots
     |> Enum.reduce([], fn channel_snapshot, results ->
-      [
-        get_channel_probe_results(config, probes, channel_snapshot)
-        | results
-      ]
+      [get_channel_probe_results(config, probes, channel_snapshot) | results]
     end)
   end
 
