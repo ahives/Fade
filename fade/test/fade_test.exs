@@ -17,6 +17,10 @@ defmodule FadeTest do
     IO.inspect(result.data |> Enum.at(5))
   end
 
+  test "Verify" do
+    system_overview_data = SystemOverviewData.get()
+  end
+
   defp get_config do
     %Fade.Config.Types.FadeConfig{
       base_url: "http://localhost:15672/",
