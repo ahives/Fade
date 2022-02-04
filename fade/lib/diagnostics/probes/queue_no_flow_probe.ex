@@ -1,4 +1,4 @@
-defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
+defmodule Fade.Diagnostic.Probes.QueueNoFlowProbe do
   alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
   alias Fade.Diagnostic.DiagnosticProbe
 
@@ -47,18 +47,15 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
 
     probe_data = [
       ProbeData.new(
-        property_name: "memory.paged_out.total",
-        property_value: snapshot.memory.paged_out.total
+        property_name: "messages.incoming.total",
+        property_value: snapshot.messages.incoming.total
       )
     ]
 
-    if snapshot.memory.paged_out.total > 0 do
+    if snapshot.messages.incoming.total = 0 do
       article =
         KnowledgeBaseArticle.new(
-          reason:
-            "Broker is nearing RAM high watermark and has paged messages to disk to prevent publishers from being blocked.",
-          remediation:
-            "Increase the amount of RAM available to the broker and configure the broker with the new watermark value."
+          reason: "There are no messages being published to the specified queue."
         )
 
       ProbeResult.unhealthy(
@@ -72,7 +69,9 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
       )
     else
       article =
-        KnowledgeBaseArticle.new(reason: "RAM used by broker is less than high watermark.")
+        KnowledgeBaseArticle.new(
+          reason: "One or more messages have being published to the specified queue."
+        )
 
       ProbeResult.healthy(
         snapshot.node,
@@ -89,12 +88,12 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.MessagePagingProbe"
+      "Fade.Diagnostic.Probes.QueueNoFlowProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "Message Paging Probe",
+      name: "Queue No Flow Probe",
       description: ""
     )
   end
@@ -103,5 +102,5 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
   def get_component_type, do: :queue
 
   @impl DiagnosticProbe
-  def get_category, do: :memory
+  def get_category, do: :throughput
 end

@@ -21,13 +21,13 @@ defmodule SystemOverviewData do
         SampleRetentionPolicies.new(
           global: [
             600,
-            3600,
-            28800,
-            86400
+            3_600,
+            28_800,
+            86_400
           ],
           basic: [
             600,
-            3600
+            3_600
           ],
           detailed: [
             600
@@ -144,17 +144,17 @@ defmodule SystemOverviewData do
           node: "rabbit@localhost",
           protocol: "clustering",
           ip_address: "::",
-          port: 25672,
+          port: 25_672,
           socket_options: []
         ),
         Listener.new(
           node: "rabbit@localhost",
           protocol: "http",
           ip_address: "::",
-          port: 15672,
+          port: 15_672,
           socket_options: %{
             cowboy_opts: %{sendfile: true},
-            port: 15672
+            port: 15_672
           }
         ),
         Listener.new(
@@ -171,7 +171,7 @@ defmodule SystemOverviewData do
           node: "rabbit@localhost",
           protocol: "stomp",
           ip_address: "::",
-          port: 61613,
+          port: 61_613,
           socket_options: %{
             backlog: 128,
             nodelay: true

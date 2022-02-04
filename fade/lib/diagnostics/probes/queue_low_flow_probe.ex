@@ -1,4 +1,4 @@
-defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
+defmodule Fade.Diagnostic.Probes.QueueLowFlowProbe do
   alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
   alias Fade.Diagnostic.DiagnosticProbe
 
@@ -41,24 +41,26 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
 
   @impl DiagnosticProbe
   @spec execute(config :: DiagnosticsConfig.t(), snapshot :: QueueSnapshot.t()) :: ProbeResult.t()
-  def execute(_config, snapshot) do
+  def execute(config, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
 
     probe_data = [
       ProbeData.new(
-        property_name: "memory.paged_out.total",
-        property_value: snapshot.memory.paged_out.total
+        property_name: "messages.incoming.total",
+        property_value: snapshot.messages.incoming.total
+      ),
+      ProbeData.new(
+        property_name: "queue_low_flow_threshold",
+        property_value: config.probes.queue_low_flow_threshold
       )
     ]
 
-    if snapshot.memory.paged_out.total > 0 do
+    if snapshot.messages.incoming.total <= config.probes.queue_low_flow_threshold do
       article =
         KnowledgeBaseArticle.new(
           reason:
-            "Broker is nearing RAM high watermark and has paged messages to disk to prevent publishers from being blocked.",
-          remediation:
-            "Increase the amount of RAM available to the broker and configure the broker with the new watermark value."
+            "Messages being published to broker is less or equal to the specified threshold."
         )
 
       ProbeResult.unhealthy(
@@ -72,7 +74,9 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
       )
     else
       article =
-        KnowledgeBaseArticle.new(reason: "RAM used by broker is less than high watermark.")
+        KnowledgeBaseArticle.new(
+          reason: "Messages being published to broker is greater than specified threshold."
+        )
 
       ProbeResult.healthy(
         snapshot.node,
@@ -89,12 +93,12 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.MessagePagingProbe"
+      "Fade.Diagnostic.Probes.QueueLowFlowProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "Message Paging Probe",
+      name: "Queue Low Flow Probe",
       description: ""
     )
   end
@@ -103,5 +107,5 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
   def get_component_type, do: :queue
 
   @impl DiagnosticProbe
-  def get_category, do: :memory
+  def get_category, do: :throughput
 end

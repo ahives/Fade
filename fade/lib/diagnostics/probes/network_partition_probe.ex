@@ -1,4 +1,4 @@
-defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
+defmodule Fade.Diagnostic.Probes.NetworkPartitionProbe do
   alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
   alias Fade.Diagnostic.DiagnosticProbe
 
@@ -10,7 +10,7 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
 
   alias Fade.Diagnostic.Types.KnowledgeBaseArticle
   alias Fade.Diagnostic.IdentifierGeneration
-  alias Fade.Snapshot.Types.QueueSnapshot
+  alias Fade.Snapshot.Types.NodeSnapshot
 
   @behaviour DiagnosticProbe
 
@@ -22,7 +22,7 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
       KnowledgeBaseArticle.new(reason: "Probe cannot execute properly without configuration.")
 
     ProbeResult.not_applicable(
-      snapshot.node,
+      snapshot.cluster_identifier,
       snapshot.identifier,
       metadata.id,
       metadata.name,
@@ -40,29 +40,28 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
   end
 
   @impl DiagnosticProbe
-  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: QueueSnapshot.t()) :: ProbeResult.t()
+  @spec execute(config :: DiagnosticsConfig.t(), snapshot :: NodeSnapshot.t()) :: ProbeResult.t()
   def execute(_config, snapshot) do
     metadata = get_metadata()
     component_type = get_component_type()
 
     probe_data = [
       ProbeData.new(
-        property_name: "memory.paged_out.total",
-        property_value: snapshot.memory.paged_out.total
+        property_name: "network_partitions",
+        property_value: snapshot.network_partitions
       )
     ]
 
-    if snapshot.memory.paged_out.total > 0 do
+    if Enum.any?(snapshot.network_partitions) do
       article =
         KnowledgeBaseArticle.new(
-          reason:
-            "Broker is nearing RAM high watermark and has paged messages to disk to prevent publishers from being blocked.",
+          reason: "Network partitions detected between one or more nodes.",
           remediation:
-            "Increase the amount of RAM available to the broker and configure the broker with the new watermark value."
+            "Please consult the RabbitMQ documentation (https://www.rabbitmq.com/partitions.html) on which strategy best fits your scenario."
         )
 
       ProbeResult.unhealthy(
-        snapshot.node,
+        snapshot.cluster_identifier,
         snapshot.identifier,
         metadata.id,
         metadata.name,
@@ -72,10 +71,10 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
       )
     else
       article =
-        KnowledgeBaseArticle.new(reason: "RAM used by broker is less than high watermark.")
+        KnowledgeBaseArticle.new(reason: "No network partitions were detected between nodes.")
 
       ProbeResult.healthy(
-        snapshot.node,
+        snapshot.cluster_identifier,
         snapshot.identifier,
         metadata.id,
         metadata.name,
@@ -89,19 +88,19 @@ defmodule Fade.Diagnostic.Probes.MessagePagingProbe do
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.MessagePagingProbe"
+      "Fade.Diagnostic.Probes.NetworkPartitionProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "Message Paging Probe",
+      name: "Network Partition Probe",
       description: ""
     )
   end
 
   @impl DiagnosticProbe
-  def get_component_type, do: :queue
+  def get_component_type, do: :node
 
   @impl DiagnosticProbe
-  def get_category, do: :memory
+  def get_category, do: :connectivity
 end
