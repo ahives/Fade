@@ -1,23 +1,23 @@
 defmodule Fade.Snapshot.Types do
   use TypedStruct
 
-  # typedstruct module: BrokerQueueChurnMetrics do
-  #   field(:persisted, integer())
-  #   field(:incoming, QueueDepth.t())
-  #   field(:unacknowledged, QueueDepth.t())
-  #   field(:ready, QueueDepth.t())
-  #   field(:gets, QueueDepth.t())
-  #   field(:gets_without_ack, QueueDepth.t())
-  #   field(:delivered, QueueDepth.t())
-  #   field(:delivered_without_ack, QueueDepth.t())
-  #   field(:delivered_gets, QueueDepth.t())
-  #   field(:redelivered, QueueDepth.t())
-  #   field(:acknowledged, QueueDepth.t())
-  #   field(:not_routed, QueueDepth.t())
-  #   field(:broker, QueueDepth.t())
+  typedstruct module: BrokerQueueChurnMetrics do
+    field(:persisted, integer())
+    field(:incoming, QueueDepth.t())
+    field(:unacknowledged, QueueDepth.t())
+    field(:ready, QueueDepth.t())
+    field(:gets, QueueDepth.t())
+    field(:gets_without_ack, QueueDepth.t())
+    field(:delivered, QueueDepth.t())
+    field(:delivered_without_ack, QueueDepth.t())
+    field(:delivered_gets, QueueDepth.t())
+    field(:redelivered, QueueDepth.t())
+    field(:acknowledged, QueueDepth.t())
+    field(:not_routed, QueueDepth.t())
+    field(:broker, QueueDepth.t())
 
-  #   def new(fields), do: struct!(__MODULE__, fields)
-  # end
+    def new(fields), do: struct!(__MODULE__, fields)
+  end
 
   typedstruct module: QueueChurnMetrics do
     field(:incoming, QueueDepth.t())

@@ -4,7 +4,7 @@ defmodule Fade.Snapshot.Types.ChannelSnapshot do
   alias Fade.Snapshot.Types.QueueOperationMetrics
 
   typedstruct do
-    field(:prefetch_count, String.t())
+    field(:prefetch_count, integer())
     field(:uncommitted_acknowledgements, integer())
     field(:uncommitted_messages, integer())
     field(:unconfirmed_messages, integer())
