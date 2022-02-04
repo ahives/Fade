@@ -14,19 +14,6 @@ defmodule Fade.Diagnostic.Probes.ChannelLimitReachedProbe do
 
   @behaviour DiagnosticProbe
 
-  def execute(nil, _snapshot) do
-    metadata = get_metadata()
-    component_type = get_component_type()
-
-    article =
-      KnowledgeBaseArticle.new(
-        reason: "Probe cannot execute properly without configuration.",
-        remediation: nil
-      )
-
-    ProbeResult.not_applicable(nil, nil, metadata.id, metadata.name, component_type, article)
-  end
-
   def execute(_config, nil) do
     metadata = get_metadata()
     component_type = get_component_type()

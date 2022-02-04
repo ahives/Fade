@@ -14,23 +14,6 @@ defmodule Fade.Diagnostic.Probes.QueueNoFlowProbe do
 
   @behaviour DiagnosticProbe
 
-  def execute(nil, snapshot) do
-    metadata = get_metadata()
-    component_type = get_component_type()
-
-    article =
-      KnowledgeBaseArticle.new(reason: "Probe cannot execute properly without configuration.")
-
-    ProbeResult.not_applicable(
-      snapshot.node,
-      snapshot.identifier,
-      metadata.id,
-      metadata.name,
-      component_type,
-      article
-    )
-  end
-
   def execute(_config, nil) do
     metadata = get_metadata()
     component_type = get_component_type()
