@@ -104,7 +104,7 @@ defmodule Fade.Diagnostic.Probes.HighConnectionCreationRateProbe do
   end
 
   @impl DiagnosticProbe
-  def get_component_type, do: :connection
+  def get_component_type, do: :broker
 
   @impl DiagnosticProbe
   def get_category, do: :connectivity

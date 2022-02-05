@@ -35,7 +35,7 @@ defmodule Fade.Diagnostic.Probes.QueueNoFlowProbe do
       )
     ]
 
-    if snapshot.messages.incoming.total = 0 do
+    if snapshot.messages.incoming.total == 0 do
       article =
         KnowledgeBaseArticle.new(
           reason: "There are no messages being published to the specified queue."

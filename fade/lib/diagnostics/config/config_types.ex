@@ -4,9 +4,7 @@ defmodule Fade.Diagnostic.Config.Types do
   typedstruct module: DiagnosticsConfig do
     field(:probes, ProbesConfig.t())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ProbesConfig do
@@ -20,8 +18,6 @@ defmodule Fade.Diagnostic.Config.Types do
     field(:file_descriptor_usage_threshold_coefficient, integer())
     field(:consumer_utilization_threshold, integer())
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 end

@@ -1,9 +1,9 @@
 defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
   alias Fade.Diagnostic.Config.Types.DiagnosticsConfig
-  alias Fade.Diagnostic.Config.Types.ProbesConfig
   alias Fade.Diagnostic.Scanner.DiagnosticScanner
   alias Fade.Diagnostic.Types.ProbeResult
   alias Fade.Snapshot.Types.BrokerConnectivitySnapshot
+  alias Fade.DiagnosticScannerError
 
   @behaviour DiagnosticScanner
 
@@ -12,23 +12,31 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
     :not_implemented
   end
 
-  @impl DiagnosticScanner
-  @spec scan(probes :: list(any), snapshot :: BrokerConnectivitySnapshot.t()) :: list(ProbeResult)
-  def scan(probes, snapshot) do
-    config =
-      DiagnosticsConfig.new(
-        probes:
-          ProbesConfig.new(
-            high_connection_closure_rate_threshold: 100,
-            high_connection_creation_rate_threshold: 100
-          )
-      )
+  def scan(nil, _probes, _snapshot) do
+    {:error, %DiagnosticScannerError{message: "Configuration not found."}}
+  end
 
-    connectivity_probes = get_connectivity_probes(probes)
+  def scan(_config, nil, _snapshot) do
+    {:error, %DiagnosticScannerError{message: "Diagnostic probes not found."}}
+  end
+
+  def scan(_config, _probes, nil) do
+    {:error, %DiagnosticScannerError{message: "Snapshot cannot be empty."}}
+  end
+
+  @impl DiagnosticScanner
+  @spec scan(
+          config :: DiagnosticsConfig.t(),
+          probes :: list(any),
+          snapshot :: BrokerConnectivitySnapshot.t()
+        ) :: {:ok, list(ProbeResult)} | {:error, DiagnosticScannerError.t()}
+  def scan(config, probes, snapshot) do
+    broker_connectivity_probes = get_broker_connectivity_probes(probes)
     channel_probes = get_channel_probes(probes)
     connection_probes = get_connection_probes(probes)
 
-    connectivity_readout = get_connectivity_probe_readout(config, connectivity_probes, snapshot)
+    broker_connectivity_readout =
+      get_broker_connectivity_probe_readout(config, broker_connectivity_probes, snapshot)
 
     connection_readout =
       snapshot.connections
@@ -40,16 +48,18 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
 
         [readouts | connection_results]
       end)
+      |> Enum.filter(fn readout -> Enum.empty?(readout) end)
 
-    [connectivity_readout | connection_readout]
+    readouts = broker_connectivity_readout ++ connection_readout
+
+    {:ok, readouts}
   end
 
-  defp get_connectivity_probes(probes) do
+  defp get_broker_connectivity_probes(probes) do
     probes
     |> Stream.reject(&is_nil/1)
     |> Enum.filter(fn x ->
-      (x.get_component_type() == :connection or x.get_component_type() == :channel) and
-        x.get_category() == :connectivity
+      x.get_component_type() == :broker and x.get_category() == :connectivity
     end)
   end
 
@@ -69,7 +79,7 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
     end)
   end
 
-  defp get_connectivity_probe_readout(config, probes, snapshot) do
+  defp get_broker_connectivity_probe_readout(config, probes, snapshot) do
     probes
     |> Enum.reduce([], fn probe, results -> [probe.execute(config, snapshot) | results] end)
   end

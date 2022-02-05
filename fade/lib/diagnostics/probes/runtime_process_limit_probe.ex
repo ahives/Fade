@@ -31,7 +31,7 @@ defmodule Fade.Diagnostic.Probes.RuntimeProcessLimitProbe do
     )
   end
 
-  def execute(config, nil) do
+  def execute(_config, nil) do
     metadata = get_metadata()
     component_type = get_component_type()
 
@@ -137,7 +137,7 @@ defmodule Fade.Diagnostic.Probes.RuntimeProcessLimitProbe do
 
     DiagnosticProbeMetadata.new(
       id: id,
-      name: "Consumer Utilization Probe",
+      name: "Runtime Process Limit Probe",
       description: ""
     )
   end

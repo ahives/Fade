@@ -2,7 +2,6 @@ defmodule Fade.Snapshot.Types do
   use TypedStruct
 
   typedstruct module: BrokerQueueChurnMetrics do
-    field(:persisted, integer())
     field(:incoming, QueueDepth.t())
     field(:unacknowledged, QueueDepth.t())
     field(:ready, QueueDepth.t())

@@ -1,6 +1,6 @@
 defmodule Fade.Snapshot.Mapper.BrokerQueuesMapper do
   alias Fade.Snapshot.Types.{
-    # BrokerQueueChurnMetrics,
+    BrokerQueueChurnMetrics,
     BrokerQueueSnapshot,
     PagedOut,
     QueueSnapshot,
@@ -20,8 +20,73 @@ defmodule Fade.Snapshot.Mapper.BrokerQueuesMapper do
   def map_data(system_overview, queues) do
     BrokerQueueSnapshot.new(
       cluster_name: system_overview.cluster_name,
-      # churn: map_churn_metrics(queues),
+      churn: map_churn_metrics(system_overview),
       queues: map_queues(queues)
+    )
+  end
+
+  defp map_churn_metrics(system_overview) do
+    BrokerQueueChurnMetrics.new(
+      incoming:
+        map_queue_depth(
+          system_overview.message_stats.total_messages_published,
+          system_overview.message_stats.messages_published_details.value
+        ),
+      not_routed:
+        map_queue_depth(
+          system_overview.message_stats.total_unroutable_messages,
+          system_overview.message_stats.unroutable_messages_details.value
+        ),
+      gets:
+        map_queue_depth(
+          system_overview.message_stats.total_message_gets,
+          system_overview.message_stats.message_get_details.value
+        ),
+      gets_without_ack:
+        map_queue_depth(
+          system_overview.message_stats.total_message_gets_without_ack,
+          system_overview.message_stats.message_gets_without_ack_details.value
+        ),
+      delivered:
+        map_queue_depth(
+          system_overview.message_stats.total_messages_delivered,
+          system_overview.message_stats.message_delivery_details.value
+        ),
+      delivered_without_ack:
+        map_queue_depth(
+          system_overview.message_stats.total_messages_delivered_without_ack,
+          system_overview.message_stats.messages_delivered_without_ack_details.value
+        ),
+      delivered_gets:
+        map_queue_depth(
+          system_overview.message_stats.total_message_delivery_gets,
+          system_overview.message_stats.message_delivery_get_details.value
+        ),
+      redelivered:
+        map_queue_depth(
+          system_overview.message_stats.total_messages_redelivered,
+          system_overview.message_stats.messages_redelivered_details.value
+        ),
+      acknowledged:
+        map_queue_depth(
+          system_overview.message_stats.total_messages_acknowledged,
+          system_overview.message_stats.messages_acknowledged_details.value
+        ),
+      broker:
+        map_queue_depth(
+          system_overview.queue_message_stats.total_messages,
+          system_overview.queue_message_stats.message_details.value
+        ),
+      ready:
+        map_queue_depth(
+          system_overview.queue_message_stats.total_messages_ready_for_delivery,
+          system_overview.queue_message_stats.messages_ready_for_delivery_details.value
+        ),
+      unacknowledged:
+        map_queue_depth(
+          system_overview.queue_message_stats.total_unacknowledged_delivered_messages,
+          system_overview.queue_message_stats.unacknowledged_delivered_message_details.value
+        )
     )
   end
 

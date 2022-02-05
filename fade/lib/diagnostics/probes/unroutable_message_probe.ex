@@ -75,7 +75,7 @@ defmodule Fade.Diagnostic.Probes.UnroutableMessageProbe do
   @impl DiagnosticProbe
   def get_metadata do
     id =
-      "Fade.Diagnostic.Probes.UnlimitedPrefetchCountProbe"
+      "Fade.Diagnostic.Probes.UnroutableMessageProbe"
       |> IdentifierGeneration.get_identifier()
 
     DiagnosticProbeMetadata.new(
