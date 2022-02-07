@@ -67,7 +67,7 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
     probes
     |> Stream.reject(&is_nil/1)
     |> Enum.filter(fn x ->
-      x.get_component_type() == :channel and x.get_category() == :connectivity
+      x.get_component_type() == :channel and x.get_category() != :connectivity
     end)
   end
 
@@ -75,8 +75,13 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
     probes
     |> Stream.reject(&is_nil/1)
     |> Enum.filter(fn x ->
-      x.get_component_type() == :connection and x.get_category() == :connectivity
+      x.get_component_type() == :connection and x.get_category() != :connectivity
     end)
+  end
+
+  defp get_channel_probe_results(config, probes, snapshot) do
+    probes
+    |> Enum.reduce([], fn probe, results -> [probe.execute(config, snapshot) | results] end)
   end
 
   defp get_broker_connectivity_probe_readout(config, probes, snapshot) do
@@ -89,11 +94,6 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
     |> Enum.reduce([], fn channel_snapshot, results ->
       [get_channel_probe_results(config, probes, channel_snapshot) | results]
     end)
-  end
-
-  defp get_channel_probe_results(config, probes, snapshot) do
-    probes
-    |> Enum.reduce([], fn probe, results -> [probe.execute(config, snapshot) | results] end)
   end
 
   defp get_connection_probe_readout(config, probes, snapshot) do

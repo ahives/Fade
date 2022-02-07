@@ -18,12 +18,7 @@ defmodule Fade.Diagnostic.Probes.ChannelLimitReachedProbe do
     metadata = get_metadata()
     component_type = get_component_type()
 
-    article =
-      KnowledgeBaseArticle.new(
-        reason: "Probe cannot execute on empty data.",
-        remediation: nil
-      )
-
+    article = KnowledgeBaseArticle.new(reason: "Probe cannot execute on empty data.")
     ProbeResult.inconclusive(nil, nil, metadata.id, metadata.name, component_type, article)
   end
 

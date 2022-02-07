@@ -143,7 +143,7 @@ defmodule Fade.Diagnostic.Probes.RuntimeProcessLimitProbe do
   end
 
   @impl DiagnosticProbe
-  def get_component_type, do: :connection
+  def get_component_type, do: :runtime
 
   @impl DiagnosticProbe
   def get_category, do: :throughput

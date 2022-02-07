@@ -142,10 +142,10 @@ defmodule Fade.Diagnostic.Probes.RedeliveredMessagesProbe do
   end
 
   @impl DiagnosticProbe
-  def get_component_type, do: :connection
+  def get_component_type, do: :queue
 
   @impl DiagnosticProbe
-  def get_category, do: :throughput
+  def get_category, do: :fault_tolerance
 
   defp is_warning(redelivered_total, incoming_total, treshold),
     do:

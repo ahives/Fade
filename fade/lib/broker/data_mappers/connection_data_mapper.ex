@@ -39,7 +39,7 @@ defmodule Fade.Broker.ConnectionDataMapper do
         type: String.to_atom(connection["type"]),
         garbage_collection_details:
           map_garbage_collection_details(connection["garbage_collection_details"]),
-        state: String.to_atom(connection["state"]),
+        state: PrimitiveDataMapper.to_atom(connection["state"]),
         ssl_hash_function: connection["ssl_hash_function"],
         ssl_cipher_algorithm: connection["ssl_cipher_algorithm"],
         ssl_key_exchange_algorithm: connection["ssl_key_exchange_algorithm"],
@@ -49,7 +49,7 @@ defmodule Fade.Broker.ConnectionDataMapper do
         peer_certificate_issuer: connection["peer_certificate_issuer"],
         peer_certificate_subject: connection["peer_certificate_subject"],
         is_ssl: connection["is_ssl"],
-        peer_host: String.to_atom(connection["peer_host"]),
+        peer_host: PrimitiveDataMapper.to_atom(connection["peer_host"]),
         host: connection["host"],
         peer_port: connection["peer_port"],
         port: connection["port"],

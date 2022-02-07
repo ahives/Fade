@@ -129,7 +129,7 @@ defmodule Fade.Diagnostic.Probes.ConsumerUtilizationProbe do
   end
 
   @impl DiagnosticProbe
-  def get_component_type, do: :connection
+  def get_component_type, do: :queue
 
   @impl DiagnosticProbe
   def get_category, do: :throughput

@@ -93,7 +93,7 @@ defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
   end
 
   @impl DiagnosticProbe
-  def get_component_type, do: :connection
+  def get_component_type, do: :channel
 
   @impl DiagnosticProbe
   def get_category, do: :throughput
