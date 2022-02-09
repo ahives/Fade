@@ -35,22 +35,27 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
     channel_probes = get_channel_probes(probes)
     connection_probes = get_connection_probes(probes)
 
-    broker_connectivity_readout =
-      get_broker_connectivity_probe_readout(config, broker_connectivity_probes, snapshot)
+    broker_connectivity_readout = get_probe_readout(config, broker_connectivity_probes, snapshot)
 
     connection_readout =
       snapshot.connections
-      |> Enum.reduce([], fn connection_snapshot, connection_results ->
-        readouts = [
-          get_channel_probe_readout(config, channel_probes, connection_snapshot.channels)
-          | get_connection_probe_readout(config, connection_probes, connection_snapshot)
-        ]
-
-        [readouts | connection_results]
+      |> Enum.reduce([], fn snapshot, readouts ->
+        [get_probe_readout(config, connection_probes, snapshot) | readouts]
       end)
-      |> Enum.filter(fn readout -> Enum.empty?(readout) end)
+      |> List.flatten()
 
-    readouts = broker_connectivity_readout ++ connection_readout
+    channel_readout =
+      snapshot.connections
+      |> Enum.reduce([], fn connection_snapshot, results ->
+        [connection_snapshot.channels | results]
+      end)
+      |> List.flatten()
+      |> Enum.reduce([], fn snapshot, readouts ->
+        [get_probe_readout(config, channel_probes, snapshot) | readouts]
+      end)
+      |> List.flatten()
+
+    readouts = connection_readout ++ channel_readout ++ broker_connectivity_readout
 
     {:ok, readouts}
   end
@@ -79,24 +84,7 @@ defmodule Fade.Diagnostic.Scanner.BrokerConnectivityScanner do
     end)
   end
 
-  defp get_channel_probe_results(config, probes, snapshot) do
-    probes
-    |> Enum.reduce([], fn probe, results -> [probe.execute(config, snapshot) | results] end)
-  end
-
-  defp get_broker_connectivity_probe_readout(config, probes, snapshot) do
-    probes
-    |> Enum.reduce([], fn probe, results -> [probe.execute(config, snapshot) | results] end)
-  end
-
-  defp get_channel_probe_readout(config, probes, channel_snapshots) do
-    channel_snapshots
-    |> Enum.reduce([], fn channel_snapshot, results ->
-      [get_channel_probe_results(config, probes, channel_snapshot) | results]
-    end)
-  end
-
-  defp get_connection_probe_readout(config, probes, snapshot) do
+  defp get_probe_readout(config, probes, snapshot) do
     probes
     |> Enum.reduce([], fn probe, results -> [probe.execute(config, snapshot) | results] end)
   end

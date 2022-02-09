@@ -79,6 +79,7 @@ defmodule Fade.Diagnostic.Probes.ChannelThrottlingProbe do
   end
 
   @impl DiagnosticProbe
+  @spec get_metadata :: DiagnosticProbeMetadata.t()
   def get_metadata do
     id =
       "Fade.Diagnostic.Probes.ChannelThrottlingProbe"
