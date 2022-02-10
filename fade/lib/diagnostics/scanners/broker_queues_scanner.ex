@@ -34,12 +34,12 @@ defmodule Fade.Diagnostic.Scanner.BrokerQueuesScanner do
     queue_probes = get_queue_probes(probes)
     exchange_probes = get_exchange_probes(probes)
 
-    exchange_readout = get_exchange_probe_readout(config, exchange_probes, snapshot)
+    exchange_readout = get_probe_readout(config, exchange_probes, snapshot)
 
     queue_readout =
       snapshot.queues
       |> Enum.reduce([], fn queue_snapshot, queue_results ->
-        [get_queue_probe_readout(config, queue_probes, queue_snapshot) | queue_results]
+        [get_probe_readout(config, queue_probes, queue_snapshot) | queue_results]
       end)
       |> Enum.filter(fn readout -> Enum.empty?(readout) end)
 
@@ -58,12 +58,7 @@ defmodule Fade.Diagnostic.Scanner.BrokerQueuesScanner do
     |> Enum.filter(fn x -> x.get_component_type() == :exchange end)
   end
 
-  defp get_queue_probe_readout(config, probes, snapshot) do
-    probes
-    |> Enum.reduce([], fn probe, results -> [probe.execute(config, snapshot) | results] end)
-  end
-
-  defp get_exchange_probe_readout(config, probes, snapshot) do
+  defp get_probe_readout(config, probes, snapshot) do
     probes
     |> Enum.reduce([], fn probe, results -> [probe.execute(config, snapshot) | results] end)
   end

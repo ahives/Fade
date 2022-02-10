@@ -112,7 +112,7 @@ defmodule Fade.Snapshot.Types do
 
     def new(fields), do: struct!(__MODULE__, fields)
 
-    def default(), do: new(total: 0, rate: 0)
+    def default, do: new(total: 0, rate: 0)
   end
 
   typedstruct module: Packets do
@@ -122,7 +122,7 @@ defmodule Fade.Snapshot.Types do
 
     def new(fields), do: struct!(__MODULE__, fields)
 
-    def default(), do: new(total: 0, bytes: 0, rate: 0.0)
+    def default, do: new(total: 0, bytes: 0, rate: 0.0)
   end
 
   typedstruct module: QueueOperation do
@@ -152,10 +152,22 @@ defmodule Fade.Snapshot.Types do
     field(:usage_rate, integer())
     field(:open_attempts, integer())
     field(:open_attempt_rate, integer())
-    field(:Avg_time_per_open_attempt, integer())
+    field(:avg_time_per_open_attempt, integer())
     field(:avg_time_rate_per_open_attempt, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default,
+      do:
+        new(
+          available: 0,
+          used: 0,
+          usage_rate: 0,
+          open_attempts: 0,
+          open_attempt_rate: 0,
+          avg_time_per_open_attempt: 0,
+          avg_time_rate_per_open_attempt: 0
+        )
   end
 
   typedstruct module: SocketDescriptorChurnMetrics do
@@ -164,36 +176,44 @@ defmodule Fade.Snapshot.Types do
     field(:usage_rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(available: 0, used: 0, usage_rate: 0)
   end
 
   typedstruct module: Bytes do
-    field(:Total, integer())
-    field(:Rate, integer())
+    field(:total, integer())
+    field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(total: 0, rate: 0)
   end
 
   typedstruct module: DiskOperationWallTime do
-    field(:Average, integer())
-    field(:Rate, integer())
+    field(:average, integer())
+    field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(average: 0, rate: 0)
   end
 
   typedstruct module: DiskUsageDetails do
-    field(:Total, integer())
-    field(:Rate, integer())
-    field(:Bytes, Bytes.t())
-    field(:WallTime, DiskOperationWallTime.t())
+    field(:total, integer())
+    field(:rate, integer())
+    field(:bytes, Bytes.t())
+    field(:wall_time, DiskOperationWallTime.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: FileHandles do
-    field(:Recycled, integer())
-    field(:Rate, integer())
+    field(:recycled, integer())
+    field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(recycled: 0, rate: 0)
   end
 
   typedstruct module: RuntimeProcessChurnMetrics do
@@ -202,13 +222,17 @@ defmodule Fade.Snapshot.Types do
     field(:usage_rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(limit: 0, used: 0, usage_rate: 0)
   end
 
   typedstruct module: PersistenceDetails do
-    field(:Total, integer())
-    field(:Rate, integer())
+    field(:total, integer())
+    field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(total: 0, rate: 0)
   end
 
   typedstruct module: TransactionDetails do
@@ -219,60 +243,66 @@ defmodule Fade.Snapshot.Types do
   end
 
   typedstruct module: JournalDetails do
-    field(:Writes, IndexUsageDetails.t())
+    field(:writes, IndexUsageDetails.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: IndexUsageDetails do
-    field(:Total, integer())
-    field(:Rate, integer())
+    field(:total, integer())
+    field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(total: 0, rate: 0)
   end
 
   typedstruct module: IndexDetails do
-    field(:Reads, IndexUsageDetails.t())
-    field(:Writes, IndexUsageDetails.t())
-    field(:Journal, JournalDetails.t())
+    field(:reads, IndexUsageDetails.t())
+    field(:writes, IndexUsageDetails.t())
+    field(:journal, JournalDetails.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: MessageStoreDetails do
-    field(:Total, integer())
-    field(:Rate, integer())
+    field(:total, integer())
+    field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(total: 0, rate: 0)
   end
 
   typedstruct module: CollectedGarbage do
-    field(:Total, integer())
-    field(:Rate, integer())
+    field(:total, integer())
+    field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(total: 0, rate: 0)
   end
 
   typedstruct module: GarbageCollection do
-    field(:ChannelsClosed, CollectedGarbage.t())
-    field(:ConnectionsClosed, CollectedGarbage.t())
-    field(:QueuesDeleted, CollectedGarbage.t())
-    field(:ReclaimedBytes, CollectedGarbage.t())
+    field(:channels_closed, CollectedGarbage.t())
+    field(:connections_closed, CollectedGarbage.t())
+    field(:queues_deleted, CollectedGarbage.t())
+    field(:reclaimed_bytes, CollectedGarbage.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: StorageDetails do
-    field(:Reads, MessageStoreDetails.t())
-    field(:Writes, MessageStoreDetails.t())
+    field(:reads, MessageStoreDetails.t())
+    field(:writes, MessageStoreDetails.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: RuntimeDatabase do
-    field(:Transactions, TransactionDetails.t())
-    field(:Index, IndexDetails.t())
-    field(:Storage, StorageDetails.t())
+    field(:transactions, TransactionDetails.t())
+    field(:index, IndexDetails.t())
+    field(:storage, StorageDetails.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
   end
@@ -287,19 +317,21 @@ defmodule Fade.Snapshot.Types do
   end
 
   typedstruct module: NodeIdentifier do
-    field(:NodeIdentifier, String.t())
-    field(:Capacity, DiskCapacityDetails.t())
-    field(:Limit, integer())
-    field(:AlarmInEffect, boolean())
+    field(:node_identifier, String.t())
+    field(:capacity, DiskCapacityDetails.t())
+    field(:limit, integer())
+    field(:alarm_in_effect, boolean())
     field(:io, IO.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: ContextSwitchingDetails do
-    field(:Total, integer())
-    field(:Rate, integer())
+    field(:total, integer())
+    field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(total: 0, rate: 0)
   end
 end

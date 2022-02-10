@@ -10,8 +10,8 @@ defmodule Fade.Snapshot.Mapper.BrokerQueuesMapper do
     RAM
   }
 
-  alias Fade.Broker.SystemOverview.Types.SystemOverviewInfo
-  alias Fade.Broker.Queue.Types.QueueInfo
+  alias Fade.Broker.SystemOverviewTypes.SystemOverviewInfo
+  alias Fade.Broker.QueueTypes.QueueInfo
 
   @spec map_data(
           system_overview :: SystemOverviewInfo.t(),

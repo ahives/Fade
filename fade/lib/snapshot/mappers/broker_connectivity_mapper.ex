@@ -18,7 +18,7 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
           system_overview :: SystemOverviewInfo.t(),
           connections :: list(ConnectionInfo),
           channels :: list(ChannelInfo)
-        ) :: BrokerConnectivitySnapshot
+        ) :: BrokerConnectivitySnapshot.t()
   def map_data(system_overview, connections, channels) do
     BrokerConnectivitySnapshot.new(
       broker_version: system_overview.rabbitmq_version,
