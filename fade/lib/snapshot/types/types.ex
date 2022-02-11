@@ -311,7 +311,7 @@ defmodule Fade.Snapshot.Types do
     field(:reads, DiskUsageDetails.t())
     field(:writes, DiskUsageDetails.t())
     field(:seeks, DiskUsageDetails.t())
-    field(:fileHandles, FileHandles.t())
+    field(:file_handles, FileHandles.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
   end

@@ -43,7 +43,9 @@ defmodule Fade.Diagnostic.Scanner.BrokerQueuesScanner do
       end)
       |> Enum.filter(fn readout -> Enum.empty?(readout) end)
 
-    {:ok, [exchange_readout | queue_readout]}
+    readouts = exchange_readout ++ queue_readout
+
+    {:ok, readouts}
   end
 
   defp get_queue_probes(probes) do

@@ -24,9 +24,11 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     RuntimeDatabase,
     RuntimeProcessChurnMetrics,
     StorageDetails,
+    SocketDescriptorChurnMetrics,
     TransactionDetails
   }
 
+  alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.NodeTypes.NodeInfo
   alias Fade.Broker.SystemOverviewTypes.SystemOverviewInfo
 
@@ -56,12 +58,15 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
         type: node.type,
         is_running: node.is_running,
         available_cores_detected: node.available_cores_detected,
-        network_partitions: node.network_partitions,
+        network_partitions: node.partitions,
         disk: map_disk(node),
         runtime: map_runtime(system_overview, node),
         memory: map_memory(node),
         context_switching:
-          map_context_switching(node.context_switches, node.context_switch_details.value)
+          map_context_switching(
+            node.context_switches,
+            PrimitiveDataMapper.get_value(node.context_switch_details)
+          )
       )
     end)
   end
@@ -82,7 +87,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     MemorySnapshot.new(
       node_identifier: node.name,
       used: node.memory_used,
-      usage_rate: node.memory_usage_details.value,
+      usage_rate: PrimitiveDataMapper.get_value(node.memory_usage_details),
       limit: node.memory_limit,
       alarm_in_effect: node.memory_alarm
     )
@@ -94,7 +99,11 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
       cluster_identifier: system_overview.cluster_name,
       version: system_overview.erlang_version,
       processes:
-        map_processes(node.total_processes, node.processes_used, node.process_usage_details.value),
+        map_processes(
+          node.total_processes,
+          node.processes_used,
+          PrimitiveDataMapper.get_value(node.process_usage_details)
+        ),
       database: map_database(node),
       gc: map_gc(node)
     )
@@ -103,15 +112,24 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_gc(node) do
     GarbageCollection.new(
       channels_closed:
-        map_collected_garbage(node.total_channels_closed, node.closed_channel_details.value),
+        map_collected_garbage(
+          node.total_channels_closed,
+          PrimitiveDataMapper.get_value(node.closed_channel_details)
+        ),
       connections_closed:
-        map_collected_garbage(node.total_connections_closed, node.closed_connection_details.value),
+        map_collected_garbage(
+          node.total_connections_closed,
+          PrimitiveDataMapper.get_value(node.closed_connection_details)
+        ),
       queues_deleted:
-        map_collected_garbage(node.total_queues_deleted, node.deleted_queue_details.value),
+        map_collected_garbage(
+          node.total_queues_deleted,
+          PrimitiveDataMapper.get_value(node.deleted_queue_details)
+        ),
       reclaimed_bytes:
         map_collected_garbage(
           node.bytes_reclaimed_by_garbage_collector,
-          node.reclaimed_bytes_from_gc_details.value
+          PrimitiveDataMapper.get_value(node.reclaimed_bytes_from_gc_details)
         )
     )
   end
@@ -145,12 +163,12 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
       reads:
         map_message_store_details(
           node.total_message_store_reads,
-          node.message_store_read_details.value
+          PrimitiveDataMapper.get_value(node.message_store_read_details)
         ),
       writes:
         map_message_store_details(
           node.total_message_store_writes,
-          node.message_store_write_details.value
+          PrimitiveDataMapper.get_value(node.message_store_write_details)
         )
     )
   end
@@ -167,11 +185,14 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_index(node) do
     IndexDetails.new(
       reads:
-        map_index_usage_details(node.total_queue_index_reads, node.queue_index_read_details.value),
+        map_index_usage_details(
+          node.total_queue_index_reads,
+          PrimitiveDataMapper.get_value(node.queue_index_read_details)
+        ),
       writes:
         map_index_usage_details(
           node.total_queue_index_writes,
-          node.queue_index_write_details.value
+          PrimitiveDataMapper.get_value(node.queue_index_write_details)
         ),
       journal: map_journal_details(node)
     )
@@ -182,7 +203,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
       writes:
         map_index_usage_details(
           node.total_queue_index_journal_writes,
-          node.queue_index_journal_write_details.value
+          PrimitiveDataMapper.get_value(node.queue_index_journal_write_details)
         )
     )
   end
@@ -192,12 +213,12 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
       ram:
         map_persistence_details(
           node.total_mnesia_ram_transactions,
-          node.mnesia_ram_transaction_count_details.value
+          PrimitiveDataMapper.get_value(node.mnesia_ram_transaction_count_details)
         ),
       disk:
         map_persistence_details(
           node.total_mnesia_disk_transactions,
-          node.mnesia_disk_transaction_count_details.value
+          PrimitiveDataMapper.get_value(node.mnesia_disk_transaction_count_details)
         )
     )
   end
@@ -258,6 +279,8 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
         usage_rate: 0
       )
 
+  defp map_processes(nil, nil, nil), do: RuntimeProcessChurnMetrics.default()
+
   defp map_processes(nil, used, usage_rate),
     do:
       RuntimeProcessChurnMetrics.new(
@@ -265,8 +288,6 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
         used: used,
         usage_rate: usage_rate
       )
-
-  defp map_processes(nil, nil, nil), do: RuntimeProcessChurnMetrics.default()
 
   defp map_processes(limit, used, usage_rate) do
     RuntimeProcessChurnMetrics.new(
@@ -291,34 +312,34 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
       reads:
         map_disk_usage_details(
           node.total_io_reads,
-          node.io_read_details.value,
+          PrimitiveDataMapper.get_value(node.io_read_details),
           node.total_io_bytes_read,
-          node.io_bytes_read_details.value,
+          PrimitiveDataMapper.get_value(node.io_bytes_read_details),
           node.avg_io_read_time,
-          node.avg_io_read_time_details.value
+          PrimitiveDataMapper.get_value(node.avg_io_read_time_details)
         ),
       writes:
         map_disk_usage_details(
           node.total_io_writes,
-          node.io_write_details.value,
+          PrimitiveDataMapper.get_value(node.io_write_details),
           node.total_io_bytes_written,
-          node.io_bytes_written_details.value,
+          PrimitiveDataMapper.get_value(node.io_bytes_written_details),
           node.avg_time_per_io_write,
-          node.avg_ime_per_io_write_details.value
+          PrimitiveDataMapper.get_value(node.avg_ime_per_io_write_details)
         ),
       seeks:
         map_disk_usage_details(
           node.io_sync_count,
-          node.io_syncs_details.value,
+          PrimitiveDataMapper.get_value(node.io_syncs_details),
           0,
           0,
           node.avg_io_sync_time,
-          node.avg_io_sync_time_details.value
+          PrimitiveDataMapper.get_value(node.avg_io_sync_time_details)
         ),
       file_handles:
         map_file_handles(
           node.total_io_reopened,
-          node.io_reopened_details.value
+          PrimitiveDataMapper.get_value(node.io_reopened_details)
         )
     )
   end
@@ -368,7 +389,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_capacity(node) do
     DiskCapacityDetails.new(
       available: node.free_disk_space,
-      rate: node.free_disk_space_details.value
+      rate: PrimitiveDataMapper.get_value(node.free_disk_space_details)
     )
   end
 
@@ -376,7 +397,18 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     OperatingSystemSnapshot.new(
       node_identifier: node.name,
       process_id: node.operating_system_process_id,
-      file_descriptors: map_file_descriptors(node)
+      file_descriptors: map_file_descriptors(node),
+      socket_descriptors: map_socket_descriptors(node)
+    )
+  end
+
+  defp map_socket_descriptors(nil), do: SocketDescriptorChurnMetrics.default()
+
+  defp map_socket_descriptors(node) do
+    SocketDescriptorChurnMetrics.new(
+      available: node.total_sockets_available,
+      used: node.sockets_used,
+      usage_rate: PrimitiveDataMapper.get_value(node.sockets_used_details)
     )
   end
 
@@ -386,11 +418,12 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     FileDescriptorChurnMetrics.new(
       available: node.total_file_descriptors,
       used: node.file_descriptor_used,
-      usage_rate: node.file_descriptor_used_details.value,
+      usage_rate: PrimitiveDataMapper.get_value(node.file_descriptor_used_details),
       open_attempts: node.total_open_file_handle_attempts,
-      open_attempt_rate: node.file_handle_open_attempt_details.value,
+      open_attempt_rate: PrimitiveDataMapper.get_value(node.file_handle_open_attempt_details),
       avg_time_per_open_attempt: node.open_file_handle_attempts_avg_time,
-      avg_time_rate_per_open_attempt: node.file_handle_open_attempt_avg_time_details.value
+      avg_time_rate_per_open_attempt:
+        PrimitiveDataMapper.get_value(node.file_handle_open_attempt_avg_time_details)
     )
   end
 end

@@ -10,7 +10,7 @@ defmodule Fade.Diagnostic.Probes.UnroutableMessageProbe do
 
   alias Fade.Diagnostic.Types.KnowledgeBaseArticle
   alias Fade.Diagnostic.IdentifierGeneration
-  alias Fade.Snapshot.Types.BrokerQueuesSnapshot
+  alias Fade.Snapshot.Types.BrokerQueueSnapshot
 
   @behaviour DiagnosticProbe
 
