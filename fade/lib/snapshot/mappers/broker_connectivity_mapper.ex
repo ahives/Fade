@@ -4,12 +4,14 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
     ChannelSnapshot,
     ChurnMetrics,
     ConnectionSnapshot,
+    CollectedGarbage,
     NetworkTrafficSnapshot,
     Packets,
     QueueOperation,
     QueueOperationMetrics
   }
 
+  alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.SystemOverviewTypes.SystemOverviewInfo
   alias Fade.Broker.ChannelTypes.ChannelInfo
   alias Fade.Broker.ConnectionTypes.ConnectionInfo
@@ -24,32 +26,43 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
       broker_version: system_overview.rabbitmq_version,
       cluster_name: system_overview.cluster_name,
       channels_closed:
-        map_churn_metrics(
+        get_churn_metrics(
+          system_overview.churn_rates,
           system_overview.churn_rates.total_channels_closed,
-          system_overview.churn_rates.closed_channel_details.value
+          system_overview.churn_rates.closed_channel_details
         ),
       channels_created:
-        map_churn_metrics(
+        get_churn_metrics(
+          system_overview.churn_rates,
           system_overview.churn_rates.total_channels_created,
-          system_overview.churn_rates.created_channel_details.value
+          system_overview.churn_rates.created_channel_details
         ),
       connections_closed:
-        map_churn_metrics(
+        get_churn_metrics(
+          system_overview.churn_rates,
           system_overview.churn_rates.total_connections_closed,
-          system_overview.churn_rates.closed_connections_details.value
+          system_overview.churn_rates.closed_connections_details
         ),
       connections_created:
-        map_churn_metrics(
+        get_churn_metrics(
+          system_overview.churn_rates,
           system_overview.churn_rates.total_connections_created,
-          system_overview.churn_rates.created_connection_details.value
+          system_overview.churn_rates.created_connection_details
         ),
       connections: map_connections(connections, channels)
     )
   end
 
-  defp map_channels(nil, _connection_name) do
-    nil
+  defp get_churn_metrics(nil, _total, _rate), do: CollectedGarbage.default()
+
+  defp get_churn_metrics(_data, total, rate) do
+    map_churn_metrics(
+      PrimitiveDataMapper.get_value(total),
+      PrimitiveDataMapper.get_rate_value(rate)
+    )
   end
+
+  defp map_channels(nil, _connection_name), do: nil
 
   defp map_channels(channels, connection_name) do
     channels
@@ -73,79 +86,93 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
     |> Enum.reject(&is_nil/1)
   end
 
-  defp map_queue_operations(nil) do
-    nil
-  end
+  defp map_queue_operations(nil), do: nil
 
   defp map_queue_operations(operation_stats) do
     QueueOperationMetrics.new(
       incoming:
-        map_queue_operation(
+        get_queue_operation(
+          operation_stats,
           operation_stats.total_messages_published,
-          operation_stats.messages_published_details.value
+          operation_stats.messages_published_details
         ),
       gets:
-        map_queue_operation(
+        get_queue_operation(
+          operation_stats,
           operation_stats.total_message_gets,
-          operation_stats.message_gets_details.value
+          operation_stats.message_gets_details
         ),
       gets_without_ack:
-        map_queue_operation(
+        get_queue_operation(
+          operation_stats,
           operation_stats.total_message_gets_without_ack,
-          operation_stats.message_gets_without_ack_details.value
+          operation_stats.message_gets_without_ack_details
         ),
       delivered:
-        map_queue_operation(
+        get_queue_operation(
+          operation_stats,
           operation_stats.total_messages_delivered,
-          operation_stats.messages_delivered_details.value
+          operation_stats.messages_delivered_details
         ),
       delivered_without_ack:
-        map_queue_operation(
+        get_queue_operation(
+          operation_stats,
           operation_stats.total_message_delivered_without_ack,
-          operation_stats.message_delivered_without_ack_details.value
+          operation_stats.message_delivered_without_ack_details
         ),
       delivered_gets:
-        map_queue_operation(
+        get_queue_operation(
+          operation_stats,
           operation_stats.total_message_delivery_gets,
-          operation_stats.message_delivery_gets_details.value
+          operation_stats.message_delivery_gets_details
         ),
       redelivered:
-        map_queue_operation(
+        get_queue_operation(
+          operation_stats,
           operation_stats.total_messages_redelivered,
-          operation_stats.messages_redelivered_details.value
+          operation_stats.messages_redelivered_details
         ),
       acknowledged:
-        map_queue_operation(
+        get_queue_operation(
+          operation_stats,
           operation_stats.total_messages_acknowledged,
-          operation_stats.messages_acknowledged_details.value
+          operation_stats.messages_acknowledged_details
         ),
       not_routed:
-        map_queue_operation(
+        get_queue_operation(
+          operation_stats,
           operation_stats.total_messages_not_routed,
-          operation_stats.messages_not_routed_details.value
+          operation_stats.messages_not_routed_details
         )
     )
   end
 
-  defp map_queue_operation(total, rate) do
-    QueueOperation.new(total: total, rate: rate)
+  defp get_queue_operation(nil, _total, _rate), do: QueueOperation.default()
+
+  defp get_queue_operation(_data, total, rate) do
+    map_queue_operation(
+      PrimitiveDataMapper.get_value(total),
+      PrimitiveDataMapper.get_rate_value(rate)
+    )
   end
 
-  defp map_network_traffic(nil) do
-    NetworkTrafficSnapshot.default()
-  end
+  defp map_queue_operation(total, rate), do: QueueOperation.new(total: total, rate: rate)
+
+  defp map_network_traffic(nil), do: NetworkTrafficSnapshot.default()
 
   defp map_network_traffic(connection) do
     NetworkTrafficSnapshot.new(
       max_frame_size: connection.max_frame_size_in_bytes,
       sent:
-        map_packets(
+        get_packets(
+          connection,
           connection.packets_sent,
           connection.packet_bytes_sent,
           connection.packet_bytes_sent_details.value
         ),
       received:
-        map_packets(
+        get_packets(
+          connection,
           connection.packets_received,
           connection.packet_bytes_received,
           connection.packet_bytes_received_details.value
@@ -153,13 +180,19 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
     )
   end
 
-  defp map_packets(total, bytes, rate) do
-    Packets.new(total: total, bytes: bytes, rate: rate)
+  defp get_packets(nil, _total, _bytes, _rate), do: Packets.default()
+
+  defp get_packets(_data, total, bytes, rate) do
+    map_packets(
+      PrimitiveDataMapper.get_value(total),
+      PrimitiveDataMapper.get_value(bytes),
+      PrimitiveDataMapper.get_rate_value(rate)
+    )
   end
 
-  defp map_connections(nil, _channels) do
-    nil
-  end
+  defp map_packets(total, bytes, rate), do: Packets.new(total: total, bytes: bytes, rate: rate)
+
+  defp map_connections(nil, _channels), do: nil
 
   defp map_connections(connections, channels) do
     connections
@@ -177,19 +210,11 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
     end)
   end
 
-  defp map_churn_metrics(nil, rate) do
-    ChurnMetrics.new(total: 0, rate: rate)
-  end
+  defp map_churn_metrics(nil, rate), do: ChurnMetrics.new(total: 0, rate: rate)
 
-  defp map_churn_metrics(total, nil) do
-    ChurnMetrics.new(total: total, rate: 0)
-  end
+  defp map_churn_metrics(total, nil), do: ChurnMetrics.new(total: total, rate: 0)
 
-  defp map_churn_metrics(nil, nil) do
-    ChurnMetrics.default()
-  end
+  defp map_churn_metrics(nil, nil), do: ChurnMetrics.default()
 
-  defp map_churn_metrics(total, rate) do
-    ChurnMetrics.new(total: total, rate: rate)
-  end
+  defp map_churn_metrics(total, rate), do: ChurnMetrics.new(total: total, rate: rate)
 end

@@ -34,7 +34,9 @@ defmodule Fade.Diagnostic.Scanner.BrokerQueuesScanner do
     queue_probes = get_queue_probes(probes)
     exchange_probes = get_exchange_probes(probes)
 
-    exchange_readout = get_probe_readout(config, exchange_probes, snapshot)
+    exchange_readout =
+      get_probe_readout(config, exchange_probes, snapshot)
+      |> List.flatten()
 
     queue_readout =
       snapshot.queues
@@ -42,6 +44,7 @@ defmodule Fade.Diagnostic.Scanner.BrokerQueuesScanner do
         [get_probe_readout(config, queue_probes, queue_snapshot) | queue_results]
       end)
       |> Enum.filter(fn readout -> Enum.empty?(readout) end)
+      |> List.flatten()
 
     readouts = exchange_readout ++ queue_readout
 

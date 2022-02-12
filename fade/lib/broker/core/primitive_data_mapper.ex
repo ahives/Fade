@@ -9,7 +9,11 @@ defmodule Fade.Broker.Core.PrimitiveDataMapper do
 
   def map_rate(data), do: Rate.new(value: data["rate"])
 
+  def get_rate_value(nil), do: 0
+
+  def get_rate_value(data), do: data.value
+
   def get_value(nil), do: 0
 
-  def get_value(data), do: data.value
+  def get_value(data), do: data
 end

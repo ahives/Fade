@@ -49,7 +49,7 @@ defmodule Fade.Diagnostic.Probes.SocketDescriptorThrottlingProbe do
     calculated_threshold =
       compute_threshold(
         config.probes.socket_usage_threshold_coefficient,
-        snapshot.processes.limit.total
+        snapshot.operating_system.socket_descriptors.available
       )
 
     probe_data = [

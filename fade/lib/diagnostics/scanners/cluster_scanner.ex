@@ -42,30 +42,35 @@ defmodule Fade.Diagnostic.Scanner.ClusterScanner do
       |> Enum.reduce([], fn snapshot, readouts ->
         [get_probe_readout(config, node_probes, snapshot) | readouts]
       end)
+      |> List.flatten()
 
     disk_readout =
       snapshot.nodes
       |> Enum.reduce([], fn snapshot, readouts ->
         [get_probe_readout(config, disk_probes, snapshot.disk) | readouts]
       end)
+      |> List.flatten()
 
     memory_readout =
       snapshot.nodes
       |> Enum.reduce([], fn snapshot, readouts ->
         [get_probe_readout(config, memory_probes, snapshot.memory) | readouts]
       end)
+      |> List.flatten()
 
     runtime_readout =
       snapshot.nodes
       |> Enum.reduce([], fn snapshot, readouts ->
         [get_probe_readout(config, runtime_probes, snapshot.runtime) | readouts]
       end)
+      |> List.flatten()
 
     os_readout =
       snapshot.nodes
       |> Enum.reduce([], fn snapshot, readouts ->
         [get_probe_readout(config, os_probes, snapshot.operating_system) | readouts]
       end)
+      |> List.flatten()
 
     readouts = node_readout ++ disk_readout ++ memory_readout ++ runtime_readout ++ os_readout
 

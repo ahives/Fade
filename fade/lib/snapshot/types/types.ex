@@ -130,6 +130,8 @@ defmodule Fade.Snapshot.Types do
     field(:rate, integer())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default, do: new(total: 0, rate: 0.0)
   end
 
   typedstruct module: QueueOperationMetrics do
@@ -186,7 +188,7 @@ defmodule Fade.Snapshot.Types do
 
     def new(fields), do: struct!(__MODULE__, fields)
 
-    def default, do: new(total: 0, rate: 0)
+    def default, do: new(total: 0, rate: 0.0)
   end
 
   typedstruct module: DiskOperationWallTime do
@@ -195,7 +197,7 @@ defmodule Fade.Snapshot.Types do
 
     def new(fields), do: struct!(__MODULE__, fields)
 
-    def default, do: new(average: 0, rate: 0)
+    def default, do: new(average: 0, rate: 0.0)
   end
 
   typedstruct module: DiskUsageDetails do
@@ -205,6 +207,15 @@ defmodule Fade.Snapshot.Types do
     field(:wall_time, DiskOperationWallTime.t())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def default,
+      do:
+        new(
+          total: 0,
+          rate: 0.0,
+          bytes: Bytes.default(),
+          wall_time: DiskOperationWallTime.default()
+        )
   end
 
   typedstruct module: FileHandles do

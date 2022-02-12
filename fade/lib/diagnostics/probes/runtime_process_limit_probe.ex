@@ -49,17 +49,17 @@ defmodule Fade.Diagnostic.Probes.RuntimeProcessLimitProbe do
     calculated_threshold =
       compute_threshold(
         config.probes.runtime_process_usage_threshold_coefficient,
-        snapshot.processes.limit.total
+        snapshot.processes.limit
       )
 
     probe_data = [
       ProbeData.new(
-        property_name: "processes.limit.total",
-        property_value: snapshot.processes.limit.total
+        property_name: "processes.limit",
+        property_value: snapshot.processes.limit
       ),
       ProbeData.new(
-        property_name: "processes.limit.used",
-        property_value: snapshot.processes.limit.used
+        property_name: "processes.used",
+        property_value: snapshot.processes.used
       ),
       ProbeData.new(
         property_name: "runtime_process_usage_threshold_coefficient",
@@ -72,7 +72,7 @@ defmodule Fade.Diagnostic.Probes.RuntimeProcessLimitProbe do
     ]
 
     cond do
-      is_unhealthy(snapshot.processes.limit.used, snapshot.processes.limit) ->
+      is_unhealthy(snapshot.processes.used, snapshot.processes.limit) ->
         article =
           KnowledgeBaseArticle.new(
             reason:
@@ -91,7 +91,7 @@ defmodule Fade.Diagnostic.Probes.RuntimeProcessLimitProbe do
           article
         )
 
-      is_warning(snapshot.processes.limit.used, snapshot.processes.limit, calculated_threshold) ->
+      is_warning(snapshot.processes.used, snapshot.processes.limit, calculated_threshold) ->
         article =
           KnowledgeBaseArticle.new(
             reason:
@@ -118,7 +118,7 @@ defmodule Fade.Diagnostic.Probes.RuntimeProcessLimitProbe do
           )
 
         ProbeResult.healthy(
-          snapshot.node,
+          snapshot.cluster_identifier,
           snapshot.identifier,
           metadata.id,
           metadata.name,

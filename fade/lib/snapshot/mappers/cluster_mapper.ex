@@ -63,12 +63,22 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
         runtime: map_runtime(system_overview, node),
         memory: map_memory(node),
         context_switching:
-          map_context_switching(
+          get_context_switching(
+            node,
             node.context_switches,
-            PrimitiveDataMapper.get_value(node.context_switch_details)
+            node.context_switch_details
           )
       )
     end)
+  end
+
+  defp get_context_switching(nil, _total, _rate), do: ContextSwitchingDetails.default()
+
+  defp get_context_switching(_data, total, rate) do
+    map_context_switching(
+      PrimitiveDataMapper.get_value(total),
+      PrimitiveDataMapper.get_rate_value(rate)
+    )
   end
 
   defp map_context_switching(nil, rate),
@@ -86,9 +96,9 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_memory(node) do
     MemorySnapshot.new(
       node_identifier: node.name,
-      used: node.memory_used,
-      usage_rate: PrimitiveDataMapper.get_value(node.memory_usage_details),
-      limit: node.memory_limit,
+      used: PrimitiveDataMapper.get_value(node.memory_used),
+      usage_rate: PrimitiveDataMapper.get_rate_value(node.memory_usage_details),
+      limit: PrimitiveDataMapper.get_value(node.memory_limit),
       alarm_in_effect: node.memory_alarm
     )
   end
@@ -99,10 +109,11 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
       cluster_identifier: system_overview.cluster_name,
       version: system_overview.erlang_version,
       processes:
-        map_processes(
+        get_processes(
+          node,
           node.total_processes,
           node.processes_used,
-          PrimitiveDataMapper.get_value(node.process_usage_details)
+          node.process_usage_details
         ),
       database: map_database(node),
       gc: map_gc(node)
@@ -112,25 +123,38 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_gc(node) do
     GarbageCollection.new(
       channels_closed:
-        map_collected_garbage(
+        get_collected_garbage(
+          node,
           node.total_channels_closed,
-          PrimitiveDataMapper.get_value(node.closed_channel_details)
+          node.closed_channel_details
         ),
       connections_closed:
-        map_collected_garbage(
+        get_collected_garbage(
+          node,
           node.total_connections_closed,
-          PrimitiveDataMapper.get_value(node.closed_connection_details)
+          node.closed_connection_details
         ),
       queues_deleted:
-        map_collected_garbage(
+        get_collected_garbage(
+          node,
           node.total_queues_deleted,
-          PrimitiveDataMapper.get_value(node.deleted_queue_details)
+          node.deleted_queue_details
         ),
       reclaimed_bytes:
-        map_collected_garbage(
+        get_collected_garbage(
+          node,
           node.bytes_reclaimed_by_garbage_collector,
-          PrimitiveDataMapper.get_value(node.reclaimed_bytes_from_gc_details)
+          node.reclaimed_bytes_from_gc_details
         )
+    )
+  end
+
+  defp get_collected_garbage(nil, _total, _rate), do: CollectedGarbage.default()
+
+  defp get_collected_garbage(_data, total, rate) do
+    map_collected_garbage(
+      PrimitiveDataMapper.get_value(total),
+      PrimitiveDataMapper.get_rate_value(rate)
     )
   end
 
@@ -141,6 +165,15 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_collected_garbage(nil, nil), do: CollectedGarbage.default()
 
   defp map_collected_garbage(total, rate), do: CollectedGarbage.new(total: total, rate: rate)
+
+  defp get_index_usage(nil, _total, _rate), do: IndexUsageDetails.default()
+
+  defp get_index_usage(_data, total, rate) do
+    map_index_usage_details(
+      PrimitiveDataMapper.get_value(total),
+      PrimitiveDataMapper.get_rate_value(rate)
+    )
+  end
 
   defp map_index_usage_details(nil, rate), do: IndexUsageDetails.new(total: 0, rate: rate)
 
@@ -161,15 +194,26 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_storage(node) do
     StorageDetails.new(
       reads:
-        map_message_store_details(
+        get_message_store(
+          node,
           node.total_message_store_reads,
-          PrimitiveDataMapper.get_value(node.message_store_read_details)
+          node.message_store_read_details
         ),
       writes:
-        map_message_store_details(
+        get_message_store(
+          node,
           node.total_message_store_writes,
-          PrimitiveDataMapper.get_value(node.message_store_write_details)
+          node.message_store_write_details
         )
+    )
+  end
+
+  defp get_message_store(nil, _total, _rate), do: MessageStoreDetails.default()
+
+  defp get_message_store(_data, total, rate) do
+    map_message_store_details(
+      PrimitiveDataMapper.get_value(total),
+      PrimitiveDataMapper.get_rate_value(rate)
     )
   end
 
@@ -185,14 +229,16 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_index(node) do
     IndexDetails.new(
       reads:
-        map_index_usage_details(
+        get_index_usage(
+          node,
           node.total_queue_index_reads,
-          PrimitiveDataMapper.get_value(node.queue_index_read_details)
+          node.queue_index_read_details
         ),
       writes:
-        map_index_usage_details(
+        get_index_usage(
+          node,
           node.total_queue_index_writes,
-          PrimitiveDataMapper.get_value(node.queue_index_write_details)
+          node.queue_index_write_details
         ),
       journal: map_journal_details(node)
     )
@@ -201,9 +247,10 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_journal_details(node) do
     JournalDetails.new(
       writes:
-        map_index_usage_details(
+        get_index_usage(
+          node,
           node.total_queue_index_journal_writes,
-          PrimitiveDataMapper.get_value(node.queue_index_journal_write_details)
+          node.queue_index_journal_write_details
         )
     )
   end
@@ -211,15 +258,26 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_transactions(node) do
     TransactionDetails.new(
       ram:
-        map_persistence_details(
+        get_persistence_details(
+          node,
           node.total_mnesia_ram_transactions,
-          PrimitiveDataMapper.get_value(node.mnesia_ram_transaction_count_details)
+          node.mnesia_ram_transaction_count_details
         ),
       disk:
-        map_persistence_details(
+        get_persistence_details(
+          node,
           node.total_mnesia_disk_transactions,
-          PrimitiveDataMapper.get_value(node.mnesia_disk_transaction_count_details)
+          node.mnesia_disk_transaction_count_details
         )
+    )
+  end
+
+  defp get_persistence_details(nil, _total, _rate), do: PersistenceDetails.default()
+
+  defp get_persistence_details(_data, total, rate) do
+    map_persistence_details(
+      PrimitiveDataMapper.get_value(total),
+      PrimitiveDataMapper.get_rate_value(rate)
     )
   end
 
@@ -230,6 +288,16 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_persistence_details(nil, nil), do: PersistenceDetails.default()
 
   defp map_persistence_details(total, rate), do: PersistenceDetails.new(total: total, rate: rate)
+
+  defp get_processes(nil, _limit, _used, _usage_rate), do: RuntimeProcessChurnMetrics.default()
+
+  defp get_processes(_data, limit, used, usage_rate) do
+    map_processes(
+      PrimitiveDataMapper.get_value(limit),
+      PrimitiveDataMapper.get_value(used),
+      PrimitiveDataMapper.get_rate_value(usage_rate)
+    )
+  end
 
   defp map_processes(nil, used, usage_rate),
     do:
@@ -301,7 +369,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     DiskSnapshot.new(
       node_identifier: node.name,
       capacity: map_capacity(node),
-      limit: node.free_disk_limit,
+      limit: PrimitiveDataMapper.get_value(node.free_disk_limit),
       alarm_in_effect: node.free_disk_alarm,
       io: map_io(node)
     )
@@ -310,37 +378,48 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_io(node) do
     IO.new(
       reads:
-        map_disk_usage_details(
+        get_disk_usage(
+          node,
           node.total_io_reads,
-          PrimitiveDataMapper.get_value(node.io_read_details),
+          node.io_read_details,
           node.total_io_bytes_read,
-          PrimitiveDataMapper.get_value(node.io_bytes_read_details),
+          node.io_bytes_read_details,
           node.avg_io_read_time,
-          PrimitiveDataMapper.get_value(node.avg_io_read_time_details)
+          node.avg_io_read_time_details
         ),
       writes:
-        map_disk_usage_details(
+        get_disk_usage(
+          node,
           node.total_io_writes,
-          PrimitiveDataMapper.get_value(node.io_write_details),
+          node.io_write_details,
           node.total_io_bytes_written,
-          PrimitiveDataMapper.get_value(node.io_bytes_written_details),
+          node.io_bytes_written_details,
           node.avg_time_per_io_write,
-          PrimitiveDataMapper.get_value(node.avg_ime_per_io_write_details)
+          node.avg_ime_per_io_write_details
         ),
       seeks:
-        map_disk_usage_details(
+        get_disk_usage(
+          node,
           node.io_sync_count,
-          PrimitiveDataMapper.get_value(node.io_syncs_details),
-          0,
-          0,
+          node.io_syncs_details,
           node.avg_io_sync_time,
-          PrimitiveDataMapper.get_value(node.avg_io_sync_time_details)
+          node.avg_io_sync_time_details
         ),
       file_handles:
-        map_file_handles(
+        get_file_handles(
+          node,
           node.total_io_reopened,
-          PrimitiveDataMapper.get_value(node.io_reopened_details)
+          node.io_reopened_details
         )
+    )
+  end
+
+  defp get_file_handles(nil, _recycled, _rate), do: FileHandles.default()
+
+  defp get_file_handles(_data, recycled, rate) do
+    map_file_handles(
+      PrimitiveDataMapper.get_value(recycled),
+      PrimitiveDataMapper.get_rate_value(rate)
     )
   end
 
@@ -352,6 +431,51 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
 
   defp map_file_handles(recycled, rate), do: FileHandles.new(recycled: recycled, rate: rate)
 
+  defp get_disk_usage(
+         nil,
+         _total,
+         _rate,
+         _total_bytes,
+         _total_bytes_rate,
+         _wall_time,
+         _wall_time_rate
+       ),
+       do: DiskUsageDetails.default()
+
+  defp get_disk_usage(
+         _data,
+         total,
+         rate,
+         total_bytes,
+         total_bytes_rate,
+         wall_time,
+         wall_time_rate
+       ) do
+    map_disk_usage_details(
+      total,
+      rate,
+      total_bytes,
+      total_bytes_rate,
+      wall_time,
+      wall_time_rate
+    )
+  end
+
+  defp get_disk_usage(
+         _data,
+         total,
+         rate,
+         wall_time,
+         wall_time_rate
+       ) do
+    DiskUsageDetails.new(
+      total: PrimitiveDataMapper.get_value(total),
+      rate: PrimitiveDataMapper.get_rate_value(rate),
+      bytes: Bytes.new(total: 0, rate: 0.0),
+      wall_time: map_wall_time(wall_time, wall_time_rate)
+    )
+  end
+
   defp map_disk_usage_details(
          total,
          rate,
@@ -361,35 +485,49 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
          wall_time_rate
        ) do
     DiskUsageDetails.new(
-      total: total,
-      rate: rate,
+      total: PrimitiveDataMapper.get_value(total),
+      rate: PrimitiveDataMapper.get_rate_value(rate),
       bytes: map_bytes(total_bytes, total_bytes_rate),
       wall_time: map_wall_time(wall_time, wall_time_rate)
     )
   end
 
-  defp map_wall_time(nil, rate), do: DiskOperationWallTime.new(average: 0, rate: rate)
+  defp map_wall_time(nil, rate),
+    do: DiskOperationWallTime.new(average: 0, rate: PrimitiveDataMapper.get_rate_value(rate))
 
-  defp map_wall_time(average, nil), do: DiskOperationWallTime.new(average: average, rate: 0)
+  defp map_wall_time(average, nil),
+    do: DiskOperationWallTime.new(average: PrimitiveDataMapper.get_value(average), rate: 0.0)
 
   defp map_wall_time(nil, nil), do: DiskOperationWallTime.default()
 
-  defp map_wall_time(average, rate), do: DiskOperationWallTime.new(average: average, rate: rate)
+  defp map_wall_time(average, rate),
+    do:
+      DiskOperationWallTime.new(
+        average: PrimitiveDataMapper.get_value(average),
+        rate: PrimitiveDataMapper.get_rate_value(rate)
+      )
 
-  defp map_bytes(nil, rate), do: Bytes.new(total: 0, rate: rate)
+  defp map_bytes(nil, rate),
+    do: Bytes.new(total: 0, rate: PrimitiveDataMapper.get_rate_value(rate))
 
-  defp map_bytes(total, nil), do: Bytes.new(total: total, rate: 0)
+  defp map_bytes(total, nil),
+    do: Bytes.new(total: PrimitiveDataMapper.get_value(total), rate: 0.0)
 
   defp map_bytes(nil, nil), do: Bytes.default()
 
-  defp map_bytes(total, rate), do: Bytes.new(total: total, rate: rate)
+  defp map_bytes(total, rate),
+    do:
+      Bytes.new(
+        total: PrimitiveDataMapper.get_value(total),
+        rate: PrimitiveDataMapper.get_rate_value(rate)
+      )
 
   defp map_capacity(nil), do: DiskCapacityDetails.default()
 
   defp map_capacity(node) do
     DiskCapacityDetails.new(
-      available: node.free_disk_space,
-      rate: PrimitiveDataMapper.get_value(node.free_disk_space_details)
+      available: PrimitiveDataMapper.get_value(node.free_disk_space),
+      rate: PrimitiveDataMapper.get_rate_value(node.free_disk_space_details)
     )
   end
 
@@ -406,9 +544,9 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
 
   defp map_socket_descriptors(node) do
     SocketDescriptorChurnMetrics.new(
-      available: node.total_sockets_available,
-      used: node.sockets_used,
-      usage_rate: PrimitiveDataMapper.get_value(node.sockets_used_details)
+      available: PrimitiveDataMapper.get_value(node.total_sockets_available),
+      used: PrimitiveDataMapper.get_value(node.sockets_used),
+      usage_rate: PrimitiveDataMapper.get_rate_value(node.sockets_used_details)
     )
   end
 
@@ -416,14 +554,16 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
 
   defp map_file_descriptors(node) do
     FileDescriptorChurnMetrics.new(
-      available: node.total_file_descriptors,
-      used: node.file_descriptor_used,
-      usage_rate: PrimitiveDataMapper.get_value(node.file_descriptor_used_details),
-      open_attempts: node.total_open_file_handle_attempts,
-      open_attempt_rate: PrimitiveDataMapper.get_value(node.file_handle_open_attempt_details),
-      avg_time_per_open_attempt: node.open_file_handle_attempts_avg_time,
+      available: PrimitiveDataMapper.get_value(node.total_file_descriptors),
+      used: PrimitiveDataMapper.get_value(node.file_descriptor_used),
+      usage_rate: PrimitiveDataMapper.get_rate_value(node.file_descriptor_used_details),
+      open_attempts: PrimitiveDataMapper.get_value(node.total_open_file_handle_attempts),
+      open_attempt_rate:
+        PrimitiveDataMapper.get_rate_value(node.file_handle_open_attempt_details),
+      avg_time_per_open_attempt:
+        PrimitiveDataMapper.get_value(node.open_file_handle_attempts_avg_time),
       avg_time_rate_per_open_attempt:
-        PrimitiveDataMapper.get_value(node.file_handle_open_attempt_avg_time_details)
+        PrimitiveDataMapper.get_rate_value(node.file_handle_open_attempt_avg_time_details)
     )
   end
 end

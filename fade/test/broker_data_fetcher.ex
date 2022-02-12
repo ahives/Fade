@@ -3,6 +3,7 @@ defmodule BrokerDataFetcher do
   alias Fade.Broker.ChannelDataMapper, as: ChannelMapper
   alias Fade.Broker.SystemOverviewDataMapper, as: SystemOverviewMapper
   alias Fade.Broker.NodeDataMapper, as: NodeMapper
+  alias Fade.Broker.QueueDataMapper, as: QueueMapper
 
   def get_connections do
     ObjectDeserializer.get_data(
@@ -29,6 +30,13 @@ defmodule BrokerDataFetcher do
     ObjectDeserializer.get_data(
       "/../../Documents/Git/Fade/fade/test/data/node_info.json",
       &NodeMapper.map_data/1
+    )
+  end
+
+  def get_queues do
+    ObjectDeserializer.get_data(
+      "/../../Documents/Git/Fade/fade/test/data/queue_info.json",
+      &QueueMapper.map_data/1
     )
   end
 end
