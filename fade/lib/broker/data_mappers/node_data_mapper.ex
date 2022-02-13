@@ -8,8 +8,8 @@ defmodule Fade.Broker.NodeDataMapper do
     NodeInfo
   }
 
-  alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
+  alias Fade.Broker.RateDataMapper
 
   @behaviour DataMapper
 
@@ -48,85 +48,81 @@ defmodule Fade.Broker.NodeDataMapper do
         name: node["name"],
         is_running: node["running"],
         memory_used: node["mem_used"],
-        memory_usage_details: PrimitiveDataMapper.map_rate(node["mem_used_details"]),
+        memory_usage_details: RateDataMapper.map_rate(node["mem_used_details"]),
         sockets_used: node["sockets_used"],
-        sockets_used_details: PrimitiveDataMapper.map_rate(node["sockets_used_details"]),
+        sockets_used_details: RateDataMapper.map_rate(node["sockets_used_details"]),
         processes_used: node["proc_used"],
-        process_usage_details: PrimitiveDataMapper.map_rate(node["proc_used_details"]),
+        process_usage_details: RateDataMapper.map_rate(node["proc_used_details"]),
         free_disk_space: node["disk_free"],
-        free_disk_space_details: PrimitiveDataMapper.map_rate(node["disk_free_details"]),
+        free_disk_space_details: RateDataMapper.map_rate(node["disk_free_details"]),
         number_of_garbage_collected: node["gc_num"],
-        gc_details: PrimitiveDataMapper.map_rate(node["gc_num_details"]),
+        gc_details: RateDataMapper.map_rate(node["gc_num_details"]),
         bytes_reclaimed_by_garbage_collector: node["gc_bytes_reclaimed"],
         reclaimed_bytes_from_gc_details:
-          PrimitiveDataMapper.map_rate(node["gc_bytes_reclaimed_details"]),
+        RateDataMapper.map_rate(node["gc_bytes_reclaimed_details"]),
         context_switches: node["context_switches"],
-        context_switch_details: PrimitiveDataMapper.map_rate(node["context_switches_details"]),
+        context_switch_details: RateDataMapper.map_rate(node["context_switches_details"]),
         total_io_reads: node["io_read_count"],
-        io_read_details: PrimitiveDataMapper.map_rate(node["io_read_count_details"]),
+        io_read_details: RateDataMapper.map_rate(node["io_read_count_details"]),
         total_io_bytes_read: node["io_read_bytes"],
-        io_bytes_read_details: PrimitiveDataMapper.map_rate(node["io_read_bytes_details"]),
+        io_bytes_read_details: RateDataMapper.map_rate(node["io_read_bytes_details"]),
         avg_io_read_time: node["io_read_avg_time"],
-        avg_io_read_time_details: PrimitiveDataMapper.map_rate(node["io_read_avg_time_details"]),
+        avg_io_read_time_details: RateDataMapper.map_rate(node["io_read_avg_time_details"]),
         total_io_writes: node["io_write_count"],
-        io_write_details: PrimitiveDataMapper.map_rate(node["io_write_count_details"]),
+        io_write_details: RateDataMapper.map_rate(node["io_write_count_details"]),
         total_io_bytes_written: node["io_write_bytes"],
-        io_bytes_written_details: PrimitiveDataMapper.map_rate(node["io_write_bytes_details"]),
+        io_bytes_written_details: RateDataMapper.map_rate(node["io_write_bytes_details"]),
         avg_time_per_io_write: node["io_write_avg_time"],
-        avg_ime_per_io_write_details:
-          PrimitiveDataMapper.map_rate(node["io_write_avg_time_details"]),
+        avg_ime_per_io_write_details: RateDataMapper.map_rate(node["io_write_avg_time_details"]),
         io_sync_count: node["io_sync_count"],
-        io_syncs_details: PrimitiveDataMapper.map_rate(node["io_sync_count_details"]),
+        io_syncs_details: RateDataMapper.map_rate(node["io_sync_count_details"]),
         avg_io_sync_time: node["io_sync_avg_time"],
-        avg_io_sync_time_details: PrimitiveDataMapper.map_rate(node["io_sync_avg_time_details"]),
+        avg_io_sync_time_details: RateDataMapper.map_rate(node["io_sync_avg_time_details"]),
         io_seek_count: node["io_seek_count"],
-        io_seeks_details: PrimitiveDataMapper.map_rate(node["io_seek_count_details"]),
+        io_seeks_details: RateDataMapper.map_rate(node["io_seek_count_details"]),
         avg_io_seek_time: node["io_seek_avg_time"],
-        avg_io_seek_time_details: PrimitiveDataMapper.map_rate(node["io_seek_avg_time_details"]),
+        avg_io_seek_time_details: RateDataMapper.map_rate(node["io_seek_avg_time_details"]),
         total_io_reopened: node["io_reopen_count"],
-        io_reopened_details: PrimitiveDataMapper.map_rate(node["io_reopen_count_details"]),
+        io_reopened_details: RateDataMapper.map_rate(node["io_reopen_count_details"]),
         total_mnesia_ram_transactions: node["mnesia_ram_tx_count"],
         mnesia_ram_transaction_count_details:
-          PrimitiveDataMapper.map_rate(node["mnesia_ram_tx_count_details"]),
+          RateDataMapper.map_rate(node["mnesia_ram_tx_count_details"]),
         total_mnesia_disk_transactions: node["mnesia_disk_tx_count"],
         mnesia_disk_transaction_count_details:
-          PrimitiveDataMapper.map_rate(node["mnesia_disk_tx_count_details"]),
+          RateDataMapper.map_rate(node["mnesia_disk_tx_count_details"]),
         total_message_store_reads: node["msg_store_read_count"],
-        message_store_read_details:
-          PrimitiveDataMapper.map_rate(node["msg_store_read_count_details"]),
+        message_store_read_details: RateDataMapper.map_rate(node["msg_store_read_count_details"]),
         total_message_store_writes: node["msg_store_write_count"],
         message_store_write_details:
-          PrimitiveDataMapper.map_rate(node["msg_store_write_count_details"]),
+          RateDataMapper.map_rate(node["msg_store_write_count_details"]),
         total_queue_index_journal_writes: node["queue_index_journal_write_count"],
         queue_index_journal_write_details:
-          PrimitiveDataMapper.map_rate(node["queue_index_journal_write_count_details"]),
+          RateDataMapper.map_rate(node["queue_index_journal_write_count_details"]),
         total_queue_index_reads: node["queue_index_write_count"],
         queue_index_read_details:
-          PrimitiveDataMapper.map_rate(node["queue_index_write_count_details"]),
+          RateDataMapper.map_rate(node["queue_index_write_count_details"]),
         total_open_file_handle_attempts: node["io_file_handle_open_attempt_count"],
         file_handle_open_attempt_details:
-          PrimitiveDataMapper.map_rate(node["io_file_handle_open_attempt_count_details"]),
+          RateDataMapper.map_rate(node["io_file_handle_open_attempt_count_details"]),
         open_file_handle_attempts_avg_time: node["io_file_handle_open_attempt_avg_time"],
         file_handle_open_attempt_avg_time_details:
-          PrimitiveDataMapper.map_rate(node["io_file_handle_open_attempt_avg_time_details"]),
+          RateDataMapper.map_rate(node["io_file_handle_open_attempt_avg_time_details"]),
         garbage_collection_metrics:
           map_garbage_collection_metrics(node["metrics_gc_queue_length"]),
         total_channels_closed: node["channel_closed"],
-        closed_channel_details: PrimitiveDataMapper.map_rate(node["channel_closed_details"]),
+        closed_channel_details: RateDataMapper.map_rate(node["channel_closed_details"]),
         total_channels_created: node["channel_created"],
-        created_channel_details: PrimitiveDataMapper.map_rate(node["channel_created_details"]),
+        created_channel_details: RateDataMapper.map_rate(node["channel_created_details"]),
         total_connections_closed: node["connection_closed"],
-        closed_connection_details:
-          PrimitiveDataMapper.map_rate(node["connection_closed_details"]),
+        closed_connection_details: RateDataMapper.map_rate(node["connection_closed_details"]),
         total_connections_created: node["connection_created"],
-        created_connection_details:
-          PrimitiveDataMapper.map_rate(node["connection_created_details"]),
+        created_connection_details: RateDataMapper.map_rate(node["connection_created_details"]),
         total_queues_created: node["queue_created"],
-        created_queue_details: PrimitiveDataMapper.map_rate(node["queue_created_details"]),
+        created_queue_details: RateDataMapper.map_rate(node["queue_created_details"]),
         total_queues_declared: node["queue_declared"],
-        declared_queue_details: PrimitiveDataMapper.map_rate(node["queue_declared_details"]),
+        declared_queue_details: RateDataMapper.map_rate(node["queue_declared_details"]),
         total_queues_deleted: node["queue_deleted"],
-        deleted_queue_details: PrimitiveDataMapper.map_rate(node["queue_deleted_details"])
+        deleted_queue_details: RateDataMapper.map_rate(node["queue_deleted_details"])
       )
     end)
   end

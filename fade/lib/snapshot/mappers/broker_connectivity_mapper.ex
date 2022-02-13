@@ -11,10 +11,11 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
     QueueOperationMetrics
   }
 
-  alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.SystemOverviewTypes.SystemOverviewInfo
   alias Fade.Broker.ChannelTypes.ChannelInfo
   alias Fade.Broker.ConnectionTypes.ConnectionInfo
+  alias Fade.Broker.RateDataMapper
+  alias Fade.Core.PrimitiveDataMapper
 
   @spec map_data(
           system_overview :: SystemOverviewInfo.t(),
@@ -58,7 +59,7 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
   defp get_churn_metrics(_data, total, rate) do
     map_churn_metrics(
       PrimitiveDataMapper.get_value(total),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 
@@ -152,7 +153,7 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
   defp get_queue_operation(_data, total, rate) do
     map_queue_operation(
       PrimitiveDataMapper.get_value(total),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 
@@ -186,7 +187,7 @@ defmodule Fade.Snapshot.Mapper.BrokerConnectivityMapper do
     map_packets(
       PrimitiveDataMapper.get_value(total),
       PrimitiveDataMapper.get_value(bytes),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 

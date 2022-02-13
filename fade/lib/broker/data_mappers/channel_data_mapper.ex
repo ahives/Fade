@@ -6,8 +6,9 @@ defmodule Fade.Broker.ChannelDataMapper do
     GarbageCollectionDetails
   }
 
-  alias Fade.Broker.Core.PrimitiveDataMapper
+  alias Fade.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
+  alias Fade.Broker.RateDataMapper
 
   @behaviour DataMapper
 
@@ -17,7 +18,7 @@ defmodule Fade.Broker.ChannelDataMapper do
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn channel ->
       ChannelInfo.new(
-        reduction_details: PrimitiveDataMapper.map_rate(channel["reduction_details"]),
+        reduction_details: RateDataMapper.map_rate(channel["reduction_details"]),
         total_reductions: channel["total_reductions"],
         virtual_host: channel["virtual_host"],
         node: channel["node"],
@@ -62,9 +63,7 @@ defmodule Fade.Broker.ChannelDataMapper do
     end)
   end
 
-  defp map_connection_details(nil) do
-    nil
-  end
+  defp map_connection_details(nil), do: nil
 
   defp map_connection_details(data) do
     ConnectionDetails.new(
@@ -74,55 +73,46 @@ defmodule Fade.Broker.ChannelDataMapper do
     )
   end
 
-  defp map_garbage_collection_details(nil) do
-    nil
-  end
+  defp map_garbage_collection_details(nil), do: nil
 
   defp map_garbage_collection_details(data) do
     GarbageCollectionDetails.new(
       minor_garbage_collection: data["minor_garbage_collection"],
-      full_sweepAfter: data["full_sweepAfter"],
+      full_sweep_after: data["full_sweepAfter"],
       minimum_heap_size: data["minimum_heap_size"],
       minimum_binary_virtual_heap_size: data["minimum_binary_virtual_heap_size"],
       maximum_heap_size: data["maximum_heap_size"]
     )
   end
 
-  defp map_operation_stats(nil) do
-    nil
-  end
+  defp map_operation_stats(nil), do: nil
 
   defp map_operation_stats(data) do
     ChannelOperationStats.new(
       total_messages_published: data["total_messages_published"],
-      messages_published_details:
-        PrimitiveDataMapper.map_rate(data["messages_published_details"]),
+      messages_published_details: RateDataMapper.map_rate(data["messages_published_details"]),
       total_messages_confirmed: data["total_messages_confirmed"],
-      messages_confirmed_details:
-        PrimitiveDataMapper.map_rate(data["messages_confirmed_details"]),
+      messages_confirmed_details: RateDataMapper.map_rate(data["messages_confirmed_details"]),
       total_messages_not_routed: data["total_messages_not_routed"],
-      messages_not_routed_details:
-        PrimitiveDataMapper.map_rate(data["messages_not_routed_details"]),
+      messages_not_routed_details: RateDataMapper.map_rate(data["messages_not_routed_details"]),
       total_message_gets: data["total_message_gets"],
-      message_gets_details: PrimitiveDataMapper.map_rate(data["message_gets_details"]),
+      message_gets_details: RateDataMapper.map_rate(data["message_gets_details"]),
       total_message_gets_without_ack: data["total_message_gets_without_ack"],
       message_gets_without_ack_details:
-        PrimitiveDataMapper.map_rate(data["message_gets_without_ack_details"]),
+        RateDataMapper.map_rate(data["message_gets_without_ack_details"]),
       total_messages_delivered: data["total_messages_delivered"],
-      messages_delivered_details:
-        PrimitiveDataMapper.map_rate(data["messages_delivered_details"]),
+      messages_delivered_details: RateDataMapper.map_rate(data["messages_delivered_details"]),
       total_message_delivered_without_ack: data["total_message_delivered_without_ack"],
       message_delivered_without_ack_details:
-        PrimitiveDataMapper.map_rate(data["message_delivered_without_ack_details"]),
+        RateDataMapper.map_rate(data["message_delivered_without_ack_details"]),
       total_message_delivery_gets: data["total_message_delivery_gets"],
       message_delivery_gets_details:
-        PrimitiveDataMapper.map_rate(data["message_delivery_gets_details"]),
+        RateDataMapper.map_rate(data["message_delivery_gets_details"]),
       total_messages_redelivered: data["total_messages_redelivered"],
-      messages_redelivered_details:
-        PrimitiveDataMapper.map_rate(data["messages_redelivered_details"]),
+      messages_redelivered_details: RateDataMapper.map_rate(data["messages_redelivered_details"]),
       total_messages_acknowledged: data["total_messages_acknowledged"],
       messages_acknowledged_details:
-        PrimitiveDataMapper.map_rate(data["messages_acknowledged_details"])
+        RateDataMapper.map_rate(data["messages_acknowledged_details"])
     )
   end
 end

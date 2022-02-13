@@ -1,4 +1,4 @@
-defmodule Fade.Broker.Core.ResultMapper do
+defmodule Fade.Core.ResultMapper do
   alias Fade.Broker.ServerResponse
   alias Fade.Types.Result
 

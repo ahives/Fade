@@ -1,10 +1,10 @@
 defmodule Fade.Broker.Queue do
   require Logger
 
-  alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
-  alias Fade.Broker.Core.ResultMapper
   alias Fade.Broker.QueueDataMapper, as: DataMapper
+  alias Fade.Config.Types.BrokerConfig
+  alias Fade.Core.ResultMapper
 
   @doc """
   Returns all queues on the current RabbitMQ node.

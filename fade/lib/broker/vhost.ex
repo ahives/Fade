@@ -1,8 +1,8 @@
 defmodule Fade.Broker.VirtualHost do
   alias Fade.Broker
-  alias Fade.Broker.Core.ResultMapper
   alias Fade.Broker.VirtualHostDataMapper, as: DataMapper
   alias Fade.Config.Types.BrokerConfig
+  alias Fade.Core.ResultMapper
 
   @doc """
   Returns information about each virtual host on the current RabbitMQ server.

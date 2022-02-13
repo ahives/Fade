@@ -10,9 +10,10 @@ defmodule Fade.Snapshot.Mapper.BrokerQueuesMapper do
     RAM
   }
 
-  alias Fade.Broker.Core.PrimitiveDataMapper
+  alias Fade.Core.PrimitiveDataMapper
   alias Fade.Broker.SystemOverviewTypes.SystemOverviewInfo
   alias Fade.Broker.QueueTypes.QueueInfo
+  alias Fade.Broker.RateDataMapper
 
   @spec map_data(
           system_overview :: SystemOverviewInfo.t(),
@@ -227,7 +228,7 @@ defmodule Fade.Snapshot.Mapper.BrokerQueuesMapper do
   defp get_value(_data, total, rate) do
     map_queue_depth(
       PrimitiveDataMapper.get_value(total),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 

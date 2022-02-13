@@ -1,7 +1,7 @@
 defmodule Fade.Broker.SystemOverviewTypes do
   use TypedStruct
 
-  alias Fade.Broker.Core.Types.Rate
+  alias Fade.Broker.CommonTypes.Rate
 
   typedstruct module: SampleRetentionPolicies do
     field(:global, list(integer))

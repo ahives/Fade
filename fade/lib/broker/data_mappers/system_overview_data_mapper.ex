@@ -1,6 +1,6 @@
 defmodule Fade.Broker.SystemOverviewDataMapper do
-  alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
+  alias Fade.Broker.RateDataMapper
 
   alias Fade.Broker.SystemOverviewTypes.{
     SampleRetentionPolicies,
@@ -97,75 +97,69 @@ defmodule Fade.Broker.SystemOverviewDataMapper do
     )
   end
 
-  defp map_queue_message_stats(nil) do
-    QueueMessageStats.default()
-  end
+  defp map_queue_message_stats(nil), do: QueueMessageStats.default()
 
   defp map_queue_message_stats(data) do
     QueueMessageStats.new(
       total_messages_ready_for_delivery: data["messages_ready"],
       messages_ready_for_delivery_details:
-        PrimitiveDataMapper.map_rate(data["messages_ready_details"]),
+        RateDataMapper.map_rate(data["messages_ready_details"]),
       total_unacknowledged_delivered_messages: data["messages_unacknowledged"],
       unacknowledged_delivered_message_details:
-        PrimitiveDataMapper.map_rate(data["messages_unacknowledged_details"]),
+        RateDataMapper.map_rate(data["messages_unacknowledged_details"]),
       total_messages: data["messages"],
-      message_details: PrimitiveDataMapper.map_rate(data["messages_details"])
+      message_details: RateDataMapper.map_rate(data["messages_details"])
     )
   end
 
-  defp map_churn_rates(nil) do
-    ChurnRates.default()
-  end
+  defp map_churn_rates(nil), do: ChurnRates.default()
 
   defp map_churn_rates(data) do
     ChurnRates.new(
       total_channels_closed: data["channel_closed"],
-      closed_channel_details: PrimitiveDataMapper.map_rate(data["channel_closed_details"]),
+      closed_channel_details: RateDataMapper.map_rate(data["channel_closed_details"]),
       total_channels_created: data["channel_created"],
-      created_channel_details: PrimitiveDataMapper.map_rate(data["channel_created_details"]),
+      created_channel_details: RateDataMapper.map_rate(data["channel_created_details"]),
       total_connections_closed: data["connection_closed"],
-      closed_connections_details: PrimitiveDataMapper.map_rate(data["connection_closed_details"]),
+      closed_connections_details: RateDataMapper.map_rate(data["connection_closed_details"]),
       total_connections_created: data["connection_created"],
-      created_connection_details:
-        PrimitiveDataMapper.map_rate(data["connection_created_details"]),
+      created_connection_details: RateDataMapper.map_rate(data["connection_created_details"]),
       total_queues_created: data["queue_created"],
-      created_queue_details: PrimitiveDataMapper.map_rate(data["queue_created_details"]),
+      created_queue_details: RateDataMapper.map_rate(data["queue_created_details"]),
       total_queues_declared: data["queue_declared"],
-      declared_queue_details: PrimitiveDataMapper.map_rate(data["queue_declared_details"]),
+      declared_queue_details: RateDataMapper.map_rate(data["queue_declared_details"]),
       total_queues_deleted: data["queue_deleted"],
-      deleted_queue_details: PrimitiveDataMapper.map_rate(data["queue_deleted_details"])
+      deleted_queue_details: RateDataMapper.map_rate(data["queue_deleted_details"])
     )
   end
 
   defp map_message_stats(data) do
     MessageStats.new(
       total_disk_reads: data["disk_reads"],
-      disk_reads_details: PrimitiveDataMapper.map_rate(data["disk_reads_details"]),
+      disk_reads_details: RateDataMapper.map_rate(data["disk_reads_details"]),
       total_disk_writes: data["disk_writes"],
-      disk_write_details: PrimitiveDataMapper.map_rate(data["disk_writes_details"]),
+      disk_write_details: RateDataMapper.map_rate(data["disk_writes_details"]),
       total_messages_published: data["publish"],
-      messages_published_details: PrimitiveDataMapper.map_rate(data["publish_details"]),
+      messages_published_details: RateDataMapper.map_rate(data["publish_details"]),
       total_messages_confirmed: data["confirm"],
-      message_confirmed_details: PrimitiveDataMapper.map_rate(data["confirm_details"]),
+      message_confirmed_details: RateDataMapper.map_rate(data["confirm_details"]),
       total_unroutable_messages: data["return_unroutable"],
-      unroutable_messages_details:
-        PrimitiveDataMapper.map_rate(data["return_unroutable_details"]),
+      unroutable_messages_details: RateDataMapper.map_rate(data["return_unroutable_details"]),
       total_message_gets: data["get"],
-      message_get_details: PrimitiveDataMapper.map_rate(data["get_details"]),
+      message_get_details: RateDataMapper.map_rate(data["get_details"]),
       total_message_gets_without_ack: data["get_no_ack"],
-      message_gets_without_ack_details: PrimitiveDataMapper.map_rate(data["get_no_ack_details"]),
+      message_gets_without_ack_details: RateDataMapper.map_rate(data["get_no_ack_details"]),
       total_messages_delivered: data["deliver"],
-      message_delivery_details: PrimitiveDataMapper.map_rate(data["deliver_details"]),
+      message_delivery_details: RateDataMapper.map_rate(data["deliver_details"]),
       total_messages_delivered_without_ack: data["deliver_no_ack"],
       messages_delivered_without_ack_details:
-        PrimitiveDataMapper.map_rate(data["deliver_no_ack_details"]),
+        RateDataMapper.map_rate(data["deliver_no_ack_details"]),
       total_message_delivery_gets: data["deliver_get"],
-      message_delivery_get_details: PrimitiveDataMapper.map_rate(data["deliver_get_details"]),
+      message_delivery_get_details: RateDataMapper.map_rate(data["deliver_get_details"]),
       total_messages_redelivered: data["redeliver"],
-      messages_redelivered_details: PrimitiveDataMapper.map_rate(data["redeliver_details"]),
+      messages_redelivered_details: RateDataMapper.map_rate(data["redeliver_details"]),
       total_messages_acknowledged: data["ack"],
-      messages_acknowledged_details: PrimitiveDataMapper.map_rate(data["ack_details"])
+      messages_acknowledged_details: RateDataMapper.map_rate(data["ack_details"])
     )
   end
 

@@ -1,6 +1,6 @@
 defmodule Fade.Broker.QueueDataMapper do
-  alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
+  alias Fade.Broker.RateDataMapper
 
   alias Fade.Broker.QueueTypes.{
     BackingQueueStatus,
@@ -8,6 +8,8 @@ defmodule Fade.Broker.QueueDataMapper do
     QueueInfo,
     QueueMessageStats
   }
+
+  alias Fade.Core.PrimitiveDataMapper
 
   @behaviour DataMapper
 
@@ -17,14 +19,14 @@ defmodule Fade.Broker.QueueDataMapper do
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn queue ->
       QueueInfo.new(
-        message_details: PrimitiveDataMapper.map_rate(queue["message_details"]),
+        message_details: RateDataMapper.map_rate(queue["message_details"]),
         total_messages: queue["total_messages"],
         unacknowledged_message_details:
-          PrimitiveDataMapper.map_rate(queue["unacknowledged_message_details"]),
+          RateDataMapper.map_rate(queue["unacknowledged_message_details"]),
         unacknowledged_messages: queue["unacknowledged_messages"],
-        ready_message_details: PrimitiveDataMapper.map_rate(queue["ready_message_details"]),
+        ready_message_details: RateDataMapper.map_rate(queue["ready_message_details"]),
         ready_messages: queue["ready_messages"],
-        reduction_details: PrimitiveDataMapper.map_rate(queue["reduction_details"]),
+        reduction_details: RateDataMapper.map_rate(queue["reduction_details"]),
         total_reduction: queue["total_reduction"],
         arguments: queue["arguments"],
         exclusive: queue["exclusive"],
@@ -97,21 +99,19 @@ defmodule Fade.Broker.QueueDataMapper do
       message_get_details: data["message_get_details"],
       total_message_gets_without_ack: data["total_message_gets_without_ack"],
       message_gets_without_ack_details:
-        PrimitiveDataMapper.map_rate(data["message_gets_without_ack_details"]),
+        RateDataMapper.map_rate(data["message_gets_without_ack_details"]),
       total_messages_delivered: data["total_messages_delivered"],
-      message_delivery_details: PrimitiveDataMapper.map_rate(data["message_delivery_details"]),
+      message_delivery_details: RateDataMapper.map_rate(data["message_delivery_details"]),
       total_messages_delivered_without_ack: data["total_messages_delivered_without_ack"],
       messages_delivered_without_ack_details:
-        PrimitiveDataMapper.map_rate(data["messages_delivered_without_ack_details"]),
+        RateDataMapper.map_rate(data["messages_delivered_without_ack_details"]),
       total_message_delivery_gets: data["total_message_delivery_gets"],
-      message_delivery_get_details:
-        PrimitiveDataMapper.map_rate(data["message_delivery_get_details"]),
+      message_delivery_get_details: RateDataMapper.map_rate(data["message_delivery_get_details"]),
       total_messages_redelivered: data["total_messages_redelivered"],
-      messages_redelivered_details:
-        PrimitiveDataMapper.map_rate(data["messages_redelivered_details"]),
+      messages_redelivered_details: RateDataMapper.map_rate(data["messages_redelivered_details"]),
       total_messages_acknowledged: data["total_messages_acknowledged"],
       messages_acknowledged_details:
-        PrimitiveDataMapper.map_rate(data["messages_acknowledged_details"])
+        RateDataMapper.map_rate(data["messages_acknowledged_details"])
     )
   end
 end

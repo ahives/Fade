@@ -1,4 +1,4 @@
-defmodule Fade.Broker.Core.Types do
+defmodule Fade.Broker.CommonTypes do
   use TypedStruct
 
   typedstruct module: Rate do

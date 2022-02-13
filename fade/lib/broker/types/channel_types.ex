@@ -30,7 +30,7 @@ defmodule Fade.Broker.ChannelTypes do
 
   typedstruct module: GarbageCollectionDetails do
     field(:minor_garbage_collection, String.t())
-    field(:full_sweepAfter, integer())
+    field(:full_sweep_after, integer())
     field(:minimum_heap_size, integer())
     field(:minimum_binary_virtual_heap_size, integer())
     field(:maximum_heap_size, integer())

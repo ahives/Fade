@@ -1,10 +1,10 @@
 defmodule Fade.Broker.Connection do
   require Logger
 
-  alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
   alias Fade.Broker.ConnectionDataMapper, as: DataMapper
-  alias Fade.Broker.Core.ResultMapper
+  alias Fade.Config.Types.BrokerConfig
+  alias Fade.Core.ResultMapper
 
   def get_all(config = %BrokerConfig{}) when not is_nil(config) do
     config

@@ -1,8 +1,8 @@
 defmodule Fade.Broker.Node do
   alias Fade.Broker
-  alias Fade.Config.Types.BrokerConfig
-  alias Fade.Broker.Core.ResultMapper
   alias Fade.Broker.NodeDataMapper, as: DataMapper
+  alias Fade.Config.Types.BrokerConfig
+  alias Fade.Core.ResultMapper
 
   @doc """
   Returns all nodes on the current RabbitMQ cluster.

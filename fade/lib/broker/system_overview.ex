@@ -1,10 +1,10 @@
 defmodule Fade.Broker.SystemOverview do
   require Logger
 
-  alias Fade.Config.Types.BrokerConfig
   alias Fade.Broker
-  alias Fade.Broker.Core.ResultMapper
   alias Fade.Broker.SystemOverviewDataMapper, as: DataMapper
+  alias Fade.Config.Types.BrokerConfig
+  alias Fade.Core.ResultMapper
 
   @doc """
   Returns various bits of random information that describe the RabbitMQ system.

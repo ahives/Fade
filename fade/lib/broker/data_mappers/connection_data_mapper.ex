@@ -6,8 +6,9 @@ defmodule Fade.Broker.ConnectionDataMapper do
     GarbageCollectionDetails
   }
 
-  alias Fade.Broker.Core.PrimitiveDataMapper
   alias Fade.Broker.DataMapper
+  alias Fade.Broker.RateDataMapper
+  alias Fade.Core.PrimitiveDataMapper
 
   @behaviour DataMapper
 
@@ -17,17 +18,17 @@ defmodule Fade.Broker.ConnectionDataMapper do
     |> Stream.reject(&is_nil/1)
     |> Enum.map(fn connection ->
       ConnectionInfo.new(
-        reduction_details: PrimitiveDataMapper.map_rate(connection["reduction_details"]),
+        reduction_details: RateDataMapper.map_rate(connection["reduction_details"]),
         protocol: connection["protocol"],
         total_reductions: connection["total_reductions"],
         packets_received: connection["packets_received"],
         packet_bytes_received: connection["packet_bytes_received"],
         packet_bytes_received_details:
-          PrimitiveDataMapper.map_rate(connection["packet_bytes_received_details"]),
+          RateDataMapper.map_rate(connection["packet_bytes_received_details"]),
         packets_sent: connection["packets_sent"],
         packet_bytes_sent: connection["packet_bytes_sent"],
         packet_bytes_sent_details:
-          PrimitiveDataMapper.map_rate(connection["packet_bytes_sent_details"]),
+          RateDataMapper.map_rate(connection["packet_bytes_sent_details"]),
         connected_at: connection["connected_at"],
         open_channels_limit: connection["open_channels_limit"],
         max_frame_size_in_bytes: connection["max_frame_size_in_bytes"],

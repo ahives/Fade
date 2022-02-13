@@ -28,8 +28,9 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     TransactionDetails
   }
 
-  alias Fade.Broker.Core.PrimitiveDataMapper
+  alias Fade.Core.PrimitiveDataMapper
   alias Fade.Broker.NodeTypes.NodeInfo
+  alias Fade.Broker.RateDataMapper
   alias Fade.Broker.SystemOverviewTypes.SystemOverviewInfo
 
   @spec map_data(
@@ -77,7 +78,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp get_context_switching(_data, total, rate) do
     map_context_switching(
       PrimitiveDataMapper.get_value(total),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 
@@ -97,7 +98,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     MemorySnapshot.new(
       node_identifier: node.name,
       used: PrimitiveDataMapper.get_value(node.memory_used),
-      usage_rate: PrimitiveDataMapper.get_rate_value(node.memory_usage_details),
+      usage_rate: RateDataMapper.get_rate_value(node.memory_usage_details),
       limit: PrimitiveDataMapper.get_value(node.memory_limit),
       alarm_in_effect: node.memory_alarm
     )
@@ -154,7 +155,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp get_collected_garbage(_data, total, rate) do
     map_collected_garbage(
       PrimitiveDataMapper.get_value(total),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 
@@ -171,7 +172,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp get_index_usage(_data, total, rate) do
     map_index_usage_details(
       PrimitiveDataMapper.get_value(total),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 
@@ -213,7 +214,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp get_message_store(_data, total, rate) do
     map_message_store_details(
       PrimitiveDataMapper.get_value(total),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 
@@ -277,7 +278,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp get_persistence_details(_data, total, rate) do
     map_persistence_details(
       PrimitiveDataMapper.get_value(total),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 
@@ -295,7 +296,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     map_processes(
       PrimitiveDataMapper.get_value(limit),
       PrimitiveDataMapper.get_value(used),
-      PrimitiveDataMapper.get_rate_value(usage_rate)
+      RateDataMapper.get_rate_value(usage_rate)
     )
   end
 
@@ -419,7 +420,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp get_file_handles(_data, recycled, rate) do
     map_file_handles(
       PrimitiveDataMapper.get_value(recycled),
-      PrimitiveDataMapper.get_rate_value(rate)
+      RateDataMapper.get_rate_value(rate)
     )
   end
 
@@ -470,7 +471,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
        ) do
     DiskUsageDetails.new(
       total: PrimitiveDataMapper.get_value(total),
-      rate: PrimitiveDataMapper.get_rate_value(rate),
+      rate: RateDataMapper.get_rate_value(rate),
       bytes: Bytes.new(total: 0, rate: 0.0),
       wall_time: map_wall_time(wall_time, wall_time_rate)
     )
@@ -486,14 +487,14 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
        ) do
     DiskUsageDetails.new(
       total: PrimitiveDataMapper.get_value(total),
-      rate: PrimitiveDataMapper.get_rate_value(rate),
+      rate: RateDataMapper.get_rate_value(rate),
       bytes: map_bytes(total_bytes, total_bytes_rate),
       wall_time: map_wall_time(wall_time, wall_time_rate)
     )
   end
 
   defp map_wall_time(nil, rate),
-    do: DiskOperationWallTime.new(average: 0, rate: PrimitiveDataMapper.get_rate_value(rate))
+    do: DiskOperationWallTime.new(average: 0, rate: RateDataMapper.get_rate_value(rate))
 
   defp map_wall_time(average, nil),
     do: DiskOperationWallTime.new(average: PrimitiveDataMapper.get_value(average), rate: 0.0)
@@ -504,11 +505,11 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     do:
       DiskOperationWallTime.new(
         average: PrimitiveDataMapper.get_value(average),
-        rate: PrimitiveDataMapper.get_rate_value(rate)
+        rate: RateDataMapper.get_rate_value(rate)
       )
 
   defp map_bytes(nil, rate),
-    do: Bytes.new(total: 0, rate: PrimitiveDataMapper.get_rate_value(rate))
+    do: Bytes.new(total: 0, rate: RateDataMapper.get_rate_value(rate))
 
   defp map_bytes(total, nil),
     do: Bytes.new(total: PrimitiveDataMapper.get_value(total), rate: 0.0)
@@ -519,7 +520,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     do:
       Bytes.new(
         total: PrimitiveDataMapper.get_value(total),
-        rate: PrimitiveDataMapper.get_rate_value(rate)
+        rate: RateDataMapper.get_rate_value(rate)
       )
 
   defp map_capacity(nil), do: DiskCapacityDetails.default()
@@ -527,7 +528,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
   defp map_capacity(node) do
     DiskCapacityDetails.new(
       available: PrimitiveDataMapper.get_value(node.free_disk_space),
-      rate: PrimitiveDataMapper.get_rate_value(node.free_disk_space_details)
+      rate: RateDataMapper.get_rate_value(node.free_disk_space_details)
     )
   end
 
@@ -546,7 +547,7 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     SocketDescriptorChurnMetrics.new(
       available: PrimitiveDataMapper.get_value(node.total_sockets_available),
       used: PrimitiveDataMapper.get_value(node.sockets_used),
-      usage_rate: PrimitiveDataMapper.get_rate_value(node.sockets_used_details)
+      usage_rate: RateDataMapper.get_rate_value(node.sockets_used_details)
     )
   end
 
@@ -556,14 +557,14 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
     FileDescriptorChurnMetrics.new(
       available: PrimitiveDataMapper.get_value(node.total_file_descriptors),
       used: PrimitiveDataMapper.get_value(node.file_descriptor_used),
-      usage_rate: PrimitiveDataMapper.get_rate_value(node.file_descriptor_used_details),
+      usage_rate: RateDataMapper.get_rate_value(node.file_descriptor_used_details),
       open_attempts: PrimitiveDataMapper.get_value(node.total_open_file_handle_attempts),
       open_attempt_rate:
-        PrimitiveDataMapper.get_rate_value(node.file_handle_open_attempt_details),
+      RateDataMapper.get_rate_value(node.file_handle_open_attempt_details),
       avg_time_per_open_attempt:
         PrimitiveDataMapper.get_value(node.open_file_handle_attempts_avg_time),
       avg_time_rate_per_open_attempt:
-        PrimitiveDataMapper.get_rate_value(node.file_handle_open_attempt_avg_time_details)
+      RateDataMapper.get_rate_value(node.file_handle_open_attempt_avg_time_details)
     )
   end
 end
