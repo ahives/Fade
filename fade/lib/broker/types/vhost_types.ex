@@ -1,7 +1,16 @@
 defmodule Fade.Broker.VirtualHostTypes do
   use TypedStruct
+  require Protocol
 
   alias Fade.Broker.Core.Types.Rate
+
+  typedstruct module: VirtualHostDefinition do
+    field(:tracing, boolean())
+    field(:description, String.t())
+    field(:tags, String.t())
+
+    def new(fields), do: struct!(__MODULE__, fields)
+  end
 
   typedstruct module: MessageStats do
     field(:total_messages_published, integer())
@@ -46,4 +55,6 @@ defmodule Fade.Broker.VirtualHostTypes do
 
     def new(fields), do: struct!(__MODULE__, fields)
   end
+
+  Protocol.derive(Jason.Encoder, Fade.Broker.VirtualHostTypes.VirtualHostDefinition)
 end

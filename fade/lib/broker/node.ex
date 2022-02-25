@@ -3,13 +3,31 @@ defmodule Fade.Broker.Node do
   alias Fade.Broker.NodeDataMapper, as: DataMapper
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Core.ResultMapper
+  alias Fade.{ConfigurationError, RabbitMqServerResponseError}
 
   @doc """
   Returns all nodes on the current RabbitMQ cluster.
   """
-  def get_all(config = %BrokerConfig{}) when not is_nil(config) do
-    config
-    |> Broker.get_all_request("api/nodes")
-    |> ResultMapper.map_result(&DataMapper.map_data/1)
+  @spec get_all(config :: BrokerConfig.t()) ::
+          {:ok, Result.t()}
+          | {:error, ConfigurationError.t()}
+          | {:error, RabbitMqServerResponseError.t()}
+  def get_all(nil) do
+    {:error, %ConfigurationError{message: "Fade configuration not valid."}}
+  end
+
+  def get_all(config) do
+    try do
+      result =
+        config
+        |> Broker.get_all_request("api/nodes")
+        |> ResultMapper.map_result(&DataMapper.map_data/1)
+
+      {:ok, result}
+    rescue
+      _ ->
+        {:error,
+         %RabbitMqServerResponseError{message: "Something went wrong on the RabbitMQ server."}}
+    end
   end
 end

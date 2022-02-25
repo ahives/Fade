@@ -59,7 +59,7 @@ defmodule Fade.Broker.NodeDataMapper do
         gc_details: RateDataMapper.map_rate(node["gc_num_details"]),
         bytes_reclaimed_by_garbage_collector: node["gc_bytes_reclaimed"],
         reclaimed_bytes_from_gc_details:
-        RateDataMapper.map_rate(node["gc_bytes_reclaimed_details"]),
+          RateDataMapper.map_rate(node["gc_bytes_reclaimed_details"]),
         context_switches: node["context_switches"],
         context_switch_details: RateDataMapper.map_rate(node["context_switches_details"]),
         total_io_reads: node["io_read_count"],

@@ -559,12 +559,11 @@ defmodule Fade.Snapshot.Mapper.ClusterMapper do
       used: PrimitiveDataMapper.get_value(node.file_descriptor_used),
       usage_rate: RateDataMapper.get_rate_value(node.file_descriptor_used_details),
       open_attempts: PrimitiveDataMapper.get_value(node.total_open_file_handle_attempts),
-      open_attempt_rate:
-      RateDataMapper.get_rate_value(node.file_handle_open_attempt_details),
+      open_attempt_rate: RateDataMapper.get_rate_value(node.file_handle_open_attempt_details),
       avg_time_per_open_attempt:
         PrimitiveDataMapper.get_value(node.open_file_handle_attempts_avg_time),
       avg_time_rate_per_open_attempt:
-      RateDataMapper.get_rate_value(node.file_handle_open_attempt_avg_time_details)
+        RateDataMapper.get_rate_value(node.file_handle_open_attempt_avg_time_details)
     )
   end
 end

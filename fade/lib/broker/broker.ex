@@ -82,7 +82,7 @@ defmodule Fade.Broker do
   def post_request(config = %BrokerConfig{}, url, value) do
     url = config.base_url <> url
     request = value |> Jason.encode!() |> IO.iodata_to_binary()
-
+    
     case HTTPoison.post(url, request, config.headers) do
       {:ok, response} ->
         case response.status_code do
@@ -102,11 +102,43 @@ defmodule Fade.Broker do
             }
         end
 
-      {:error, err} ->
+      {:error, reason} ->
         %ServerResponse{
           url: url,
           has_faulted: true,
-          error: err.reason
+          error: reason
+        }
+    end
+  end
+
+  def put_request(config = %BrokerConfig{}, url, value) do
+    url = config.base_url <> url
+    request = value |> Jason.encode!() |> IO.iodata_to_binary() |> IO.inspect()
+
+    case HTTPoison.put(url, request, config.headers) do
+      {:ok, response} ->
+        case response.status_code do
+          200 ->
+            %ServerResponse{
+              url: url,
+              data: response.body,
+              status_code: response.status_code
+            }
+
+          _ ->
+            %ServerResponse{
+              url: url,
+              data: response.body,
+              has_faulted: true,
+              status_code: response.status_code
+            }
+        end
+
+      {:error, reason} ->
+        %ServerResponse{
+          url: url,
+          has_faulted: true,
+          error: reason
         }
     end
   end
