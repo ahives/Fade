@@ -5,17 +5,17 @@ defmodule Fade.Broker.Channel do
   alias Fade.Broker.ChannelDataMapper, as: DataMapper
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Core.ResultMapper
-  alias Fade.{ConfigurationError, RabbitMqServerResponseError}
+  alias Fade.{ConfigurationMissingError, RabbitMqServerResponseError}
 
   @doc """
   Returns all channels on the current RabbitMQ node.
   """
   @spec get_all(config :: BrokerConfig.t()) ::
           {:ok, Result.t()}
-          | {:error, ConfigurationError.t()}
+          | {:error, ConfigurationMissingError.t()}
           | {:error, RabbitMqServerResponseError.t()}
   def get_all(nil) do
-    {:error, %ConfigurationError{message: "Fade configuration not valid."}}
+    {:error, %ConfigurationMissingError{message: "Fade configuration missing."}}
   end
 
   def get_all(config) do

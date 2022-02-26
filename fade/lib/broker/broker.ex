@@ -12,6 +12,8 @@ defmodule Fade.Broker do
     field(:status_code, integer())
     field(:has_faulted, boolean(), default: false)
     field(:error, atom())
+
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   @doc """
@@ -24,27 +26,27 @@ defmodule Fade.Broker do
       {:ok, response} ->
         case response.status_code do
           200 ->
-            %ServerResponse{
+            ServerResponse.new(
               url: url,
               data: response.body,
               status_code: response.status_code
-            }
+            )
 
           _ ->
-            %ServerResponse{
+            ServerResponse.new(
               url: url,
               data: response.body,
               has_faulted: true,
               status_code: response.status_code
-            }
+            )
         end
 
       {:error, err} ->
-        %ServerResponse{
+        ServerResponse.new(
           url: url,
           has_faulted: true,
           error: err.reason
-        }
+        )
     end
   end
 
@@ -82,7 +84,7 @@ defmodule Fade.Broker do
   def post_request(config = %BrokerConfig{}, url, value) do
     url = config.base_url <> url
     request = value |> Jason.encode!() |> IO.iodata_to_binary()
-    
+
     case HTTPoison.post(url, request, config.headers) do
       {:ok, response} ->
         case response.status_code do
@@ -113,33 +115,64 @@ defmodule Fade.Broker do
 
   def put_request(config = %BrokerConfig{}, url, value) do
     url = config.base_url <> url
-    request = value |> Jason.encode!() |> IO.iodata_to_binary() |> IO.inspect()
+    request = value |> Jason.encode!() |> IO.iodata_to_binary()
 
     case HTTPoison.put(url, request, config.headers) do
       {:ok, response} ->
         case response.status_code do
           200 ->
-            %ServerResponse{
+            ServerResponse.new(
               url: url,
               data: response.body,
               status_code: response.status_code
-            }
+            )
 
           _ ->
-            %ServerResponse{
+            ServerResponse.new(
               url: url,
               data: response.body,
               has_faulted: true,
               status_code: response.status_code
-            }
+            )
         end
 
       {:error, reason} ->
-        %ServerResponse{
+        ServerResponse.new(
           url: url,
           has_faulted: true,
           error: reason
-        }
+        )
+    end
+  end
+
+  def delete_request(config = %BrokerConfig{}, url) do
+    url = config.base_url <> url
+
+    case HTTPoison.delete(url, config.headers) do
+      {:ok, response} ->
+        case response.status_code do
+          200 ->
+            ServerResponse.new(
+              url: url,
+              data: response.body,
+              status_code: response.status_code
+            )
+
+          _ ->
+            ServerResponse.new(
+              url: url,
+              data: response.body,
+              has_faulted: true,
+              status_code: response.status_code
+            )
+        end
+
+      {:error, reason} ->
+        ServerResponse.new(
+          url: url,
+          has_faulted: true,
+          error: reason
+        )
     end
   end
 end

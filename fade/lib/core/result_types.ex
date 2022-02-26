@@ -17,9 +17,7 @@ defmodule Fade.Types do
     field(:response, String.t())
     field(:error, Error.t(), default: nil)
 
-    def new(fields) do
-      struct!(__MODULE__, fields)
-    end
+    def new(fields), do: struct!(__MODULE__, fields)
   end
 
   typedstruct module: Result do
@@ -105,7 +103,11 @@ defmodule Fade.Types do
 
         401 ->
           Error.new(reason: "Unauthorized access to RabbitMQ server resource.")
-          # 403 -> Error.new(reason: "")
+
+        # 403 -> Error.new(reason: "")
+
+        _ ->
+          nil
       end
     end
   end

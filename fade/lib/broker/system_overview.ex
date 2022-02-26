@@ -5,17 +5,17 @@ defmodule Fade.Broker.SystemOverview do
   alias Fade.Broker.SystemOverviewDataMapper, as: DataMapper
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Core.ResultMapper
-  alias Fade.{ConfigurationError, RabbitMqServerResponseError}
+  alias Fade.{ConfigurationMissingError, RabbitMqServerResponseError}
 
   @doc """
   Returns various bits of random information that describe the RabbitMQ system.
   """
   @spec get(config :: BrokerConfig.t()) ::
           {:ok, Result.t()}
-          | {:error, ConfigurationError.t()}
+          | {:error, ConfigurationMissingError.t()}
           | {:error, RabbitMqServerResponseError.t()}
   def get(nil) do
-    {:error, %ConfigurationError{message: "Fade configuration not valid."}}
+    {:error, %ConfigurationMissingError{message: "Fade configuration missing."}}
   end
 
   def get(config) do
