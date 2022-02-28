@@ -8,12 +8,12 @@ defmodule Fade.Broker.UserDataMapper do
   def map_data(data) do
     data
     |> Stream.reject(&is_nil/1)
-    |> Enum.map(fn vhost ->
+    |> Enum.map(fn user ->
       UserInfo.new(
-        username: vhost["name"],
-        password_hash: vhost["password_hash"],
-        hashing_algorithm: vhost["hashing_algorithm"],
-        tags: vhost["tags"]
+        username: user["name"],
+        password_hash: user["password_hash"],
+        hashing_algorithm: user["hashing_algorithm"],
+        tags: user["tags"]
       )
     end)
   end

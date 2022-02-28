@@ -8,10 +8,10 @@ defmodule Fade.Broker.VirtualHostLimitDataMapper do
   def map_data(data) do
     data
     |> Stream.reject(&is_nil/1)
-    |> Enum.map(fn vhost ->
+    |> Enum.map(fn vhost_limit ->
       VirtualHostLimitInfo.new(
-        vhost: vhost["vhost"],
-        limits: vhost["value"]
+        vhost: vhost_limit["vhost"],
+        limits: vhost_limit["value"]
       )
     end)
   end
