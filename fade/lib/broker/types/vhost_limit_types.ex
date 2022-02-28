@@ -1,6 +1,5 @@
 defmodule Fade.Broker.VirtualHostLimitTypes do
   use TypedStruct
-  require Protocol
 
   # typedstruct module: VirtualHostLimitsRequest do
   #   field(:, )
