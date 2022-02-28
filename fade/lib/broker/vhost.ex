@@ -117,14 +117,15 @@ defmodule Fade.Broker.VirtualHost do
 
         "2%f" ->
           {:error, %InvalidVirtualHostError{message: "Virtual host not valid."}}
+
+        _ ->
+          result =
+            config
+            |> Broker.delete_request("api/vhosts/#{sanitized_vhost}")
+            |> ResultMapper.map_result(&DataMapper.map_data/1)
+
+          {:ok, result}
       end
-
-      result =
-        config
-        |> Broker.delete_request("api/vhosts/#{sanitized_vhost}")
-        |> ResultMapper.map_result(&DataMapper.map_data/1)
-
-      {:ok, result}
     rescue
       _ ->
         {:error,

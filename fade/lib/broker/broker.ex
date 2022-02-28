@@ -14,6 +14,14 @@ defmodule Fade.Broker do
     field(:error, atom())
 
     def new(fields), do: struct!(__MODULE__, fields)
+
+    def get_successful_response(url, body, status_code) do
+      ServerResponse.new(
+        url: url,
+        data: body,
+        status_code: status_code
+      )
+    end
   end
 
   @doc """
@@ -26,11 +34,7 @@ defmodule Fade.Broker do
       {:ok, response} ->
         case response.status_code do
           200 ->
-            ServerResponse.new(
-              url: url,
-              data: response.body,
-              status_code: response.status_code
-            )
+            ServerResponse.get_successful_response(url, response.body, response.status_code)
 
           _ ->
             ServerResponse.new(
@@ -57,11 +61,7 @@ defmodule Fade.Broker do
       {:ok, response} ->
         case response.status_code do
           200 ->
-            %ServerResponse{
-              url: url,
-              data: response.body,
-              status_code: response.status_code
-            }
+            ServerResponse.get_successful_response(url, response.body, response.status_code)
 
           _ ->
             %ServerResponse{
@@ -89,11 +89,7 @@ defmodule Fade.Broker do
       {:ok, response} ->
         case response.status_code do
           200 ->
-            %ServerResponse{
-              url: url,
-              data: response.body,
-              status_code: response.status_code
-            }
+            ServerResponse.get_successful_response(url, response.body, response.status_code)
 
           _ ->
             %ServerResponse{
@@ -121,11 +117,7 @@ defmodule Fade.Broker do
       {:ok, response} ->
         case response.status_code do
           200 ->
-            ServerResponse.new(
-              url: url,
-              data: response.body,
-              status_code: response.status_code
-            )
+            ServerResponse.get_successful_response(url, response.body, response.status_code)
 
           _ ->
             ServerResponse.new(
@@ -152,11 +144,7 @@ defmodule Fade.Broker do
       {:ok, response} ->
         case response.status_code do
           200 ->
-            ServerResponse.new(
-              url: url,
-              data: response.body,
-              status_code: response.status_code
-            )
+            ServerResponse.get_successful_response(url, response.body, response.status_code)
 
           _ ->
             ServerResponse.new(
