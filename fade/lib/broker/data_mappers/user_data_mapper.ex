@@ -1,6 +1,6 @@
 defmodule Fade.Broker.UserDataMapper do
   alias Fade.Broker.DataMapper
-  alias Fade.Broker.UserInfoTypes.UserInfo
+  alias Fade.Broker.UserTypes.UserInfo
 
   @behaviour DataMapper
 

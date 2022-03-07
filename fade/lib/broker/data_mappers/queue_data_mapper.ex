@@ -9,8 +9,6 @@ defmodule Fade.Broker.QueueDataMapper do
     QueueMessageStats
   }
 
-  alias Fade.Core.PrimitiveDataMapper
-
   @behaviour DataMapper
 
   @impl DataMapper

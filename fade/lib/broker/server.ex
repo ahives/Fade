@@ -1,6 +1,6 @@
-defmodule Fade.Broker.Shovel do
+defmodule Fade.Broker.Server do
   alias Fade.Broker
-  alias Fade.Broker.ShovelDataMapper, as: DataMapper
+  alias Fade.Broker.ServerDataMapper, as: DataMapper
   alias Fade.Config.Types.BrokerConfig
   alias Fade.Core.ResultMapper
 
@@ -10,7 +10,7 @@ defmodule Fade.Broker.Shovel do
   }
 
   @doc """
-  Returns information about all users on the current RabbitMQ server.
+  Returns all object definitions on the current RabbitMQ node.
   """
   @spec get_all(config :: BrokerConfig.t()) ::
           {:ok, Result.t()}
@@ -24,7 +24,7 @@ defmodule Fade.Broker.Shovel do
     try do
       result =
         config
-        |> Broker.get_all_request("api/shovels")
+        |> Broker.get_all_request("api/definitions")
         |> ResultMapper.map_result(&DataMapper.map_data/1)
 
       {:ok, result}

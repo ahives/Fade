@@ -1,4 +1,4 @@
-defmodule Fade.Broker.UserInfoTypes do
+defmodule Fade.Broker.UserTypes do
   use TypedStruct
 
   typedstruct module: UserInfo do
